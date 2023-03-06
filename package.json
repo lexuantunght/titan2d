@@ -1,0 +1,52 @@
+{
+    "name": "titan2d",
+    "version": "1.0.0",
+    "description": "A Javascript Library for rendering 2D scene",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "cross-env NODE_ENV=development webpack-dev-server .",
+        "build": "cross-env NODE_ENV=production webpack ."
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/lexuantunght/titan2d.git"
+    },
+    "author": "RenderUniverse",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/lexuantunght/titan2d/issues"
+    },
+    "homepage": "https://github.com/lexuantunght/titan2d#readme",
+    "devDependencies": {
+        "@babel/core": "7.17.8",
+        "@babel/node": "7.16.8",
+        "@babel/preset-env": "7.16.11",
+        "@babel/preset-typescript": "7.16.7",
+        "@babel/runtime": "7.18.6",
+        "@types/lodash-es": "^4.17.6",
+        "@typescript-eslint/eslint-plugin": "^5.26.0",
+        "@typescript-eslint/parser": "^5.26.0",
+        "babel-loader": "^8.2.5",
+        "circular-dependency-plugin": "^5.2.2",
+        "copy-webpack-plugin": "^11.0.0",
+        "cross-env": "^7.0.3",
+        "css-loader": "^6.7.1",
+        "css-minimizer-webpack-plugin": "3.4.1",
+        "eslint": "8.22.0",
+        "file-loader": "^6.2.0",
+        "html-webpack-plugin": "^5.5.0",
+        "image-webpack-loader": "^8.1.0",
+        "mini-css-extract-plugin": "^2.6.1",
+        "sass": "^1.55.0",
+        "sass-loader": "12.6.0",
+        "style-loader": "^3.3.1",
+        "ts-loader": "^9.3.1",
+        "tsconfig-paths-webpack-plugin": "^4.0.0",
+        "typescript": "^4.9.5",
+        "webpack": "^5.75.0"
+    },
+    "dependencies": {
+        "lodash-es": "^4.17.21"
+    }
+}

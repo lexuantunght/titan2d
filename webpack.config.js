@@ -8,15 +8,11 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-    entry: { titan: './src/index.ts' },
+    entry: { titan: './src/index.ts', index: './index.js' },
     output: {
         path: path.join(__dirname, 'build'),
-        filename: '[name].bundle.js',
+        filename: '[name].[contenthash].js',
         clean: true,
-        library: {
-            name: 'Titan',
-            type: 'var',
-        },
     },
     mode: process.env.NODE_ENV || 'development',
     resolve: {
@@ -96,15 +92,13 @@ module.exports = {
             template: path.join(__dirname, 'public', 'index.html'),
             favicon: path.join(__dirname, 'public', 'favicon.ico'),
             filename: 'index.html',
-            chunks: ['titan'],
-            inject: true,
         }),
         new MiniCssExtractPlugin({
             filename: '[name].min.css',
         }),
         new CircularDependencyPlugin(),
-        new CopyWebpackPlugin({
-            patterns: [{ from: 'public/res', to: 'res' }],
-        }),
+        // new CopyWebpackPlugin({
+        //     patterns: [{ from: 'public/res', to: 'res' }],
+        // }),
     ],
 };

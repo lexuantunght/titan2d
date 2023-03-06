@@ -8,7 +8,7 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-    entry: { titan: './src/index.ts', index: './index.js' },
+    entry: './src/example.ts',
     output: {
         path: path.join(__dirname, 'build'),
         filename: '[name].[contenthash].js',
@@ -97,8 +97,5 @@ module.exports = {
             filename: '[name].min.css',
         }),
         new CircularDependencyPlugin(),
-        // new CopyWebpackPlugin({
-        //     patterns: [{ from: 'public/res', to: 'res' }],
-        // }),
     ],
 };

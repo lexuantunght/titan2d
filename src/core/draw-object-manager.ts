@@ -1,10 +1,10 @@
-import { DrawObjectTree } from 'core/types';
+import { TextureObject } from 'core/types';
 
 export class DrawObjectManager {
     private static instance: DrawObjectManager | null = null;
-    private tree: DrawObjectTree | null;
+    private textures: TextureObject[];
     private constructor() {
-        this.tree = null;
+        this.textures = [];
     }
 
     static getInstance() {
@@ -15,10 +15,16 @@ export class DrawObjectManager {
     }
 
     getDrawInfo() {
-        return [];
+        return this.textures;
+    }
+
+    addTexture(texture?: TextureObject) {
+        if (texture) {
+            this.textures.push(texture);
+        }
     }
 
     cleanup() {
-        this.tree = null;
+        this.textures = [];
     }
 }

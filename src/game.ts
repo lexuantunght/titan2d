@@ -2,7 +2,7 @@ import Engine from 'engine';
 
 export class Game {
     private engine;
-    constructor(parent?: HTMLElement) {
+    constructor(parent?: HTMLElement | null) {
         this.engine = new Engine(parent);
     }
 

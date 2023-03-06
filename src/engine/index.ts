@@ -4,7 +4,7 @@ import { Director } from './director';
 class Engine {
     private webgl;
     private canvas;
-    constructor(parent?: HTMLElement) {
+    constructor(parent?: HTMLElement | null) {
         this.canvas = document.createElement('canvas');
         if (parent) {
             parent.appendChild(this.canvas);

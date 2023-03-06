@@ -1,3 +1,3 @@
-import { Game } from './src';
+import { Game } from './index';
 
 new Game(document.getElementById('root'));

@@ -1,6 +1,7 @@
 import { Scene } from 'game-components';
 import EventModel from 'utils/event-model';
 import { DirectorEventType } from 'engine/types';
+import { DrawObjectManager } from 'core/draw-object-manager';
 
 export class Director extends EventModel<DirectorEventType> {
     private static instance: Director | null = null;
@@ -24,6 +25,7 @@ export class Director extends EventModel<DirectorEventType> {
     }
 
     runScene(scene: Scene) {
+        DrawObjectManager.getInstance().cleanup();
         this.isRunning = true;
         if (this.currentScene) {
             this.currentScene.onExit();

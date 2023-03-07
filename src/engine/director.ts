@@ -25,11 +25,11 @@ export class Director extends EventModel<DirectorEventType> {
     }
 
     runScene(scene: Scene) {
-        DrawObjectManager.getInstance().cleanup();
         this.isRunning = true;
         if (this.currentScene) {
             this.currentScene.onExit();
         }
+        DrawObjectManager.getInstance().cleanup();
         this.currentScene = scene;
         this.currentScene.onEnter();
         this.listeners.get('RUN_SCENE')?.forEach((cb) => cb());

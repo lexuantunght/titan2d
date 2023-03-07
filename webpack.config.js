@@ -8,12 +8,13 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-    entry: './src/example.ts',
+    entry: { example: './example.ts' },
     output: {
         path: path.join(__dirname, 'build'),
         filename: '[name].[contenthash].js',
         clean: true,
     },
+    devtool: 'source-map',
     mode: process.env.NODE_ENV || 'development',
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
@@ -92,6 +93,8 @@ module.exports = {
             template: path.join(__dirname, 'public', 'index.html'),
             favicon: path.join(__dirname, 'public', 'favicon.ico'),
             filename: 'index.html',
+            chunks: 'all',
+            inject: true,
         }),
         new MiniCssExtractPlugin({
             filename: '[name].min.css',

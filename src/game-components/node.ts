@@ -1,5 +1,6 @@
 import ClientID from 'utils/client-id';
 import { DrawObjectManager } from 'core/draw-object-manager';
+import { TextureObject } from 'core/types';
 import { Vec3 } from './math';
 import { GameComponentType } from './types';
 
@@ -21,9 +22,10 @@ export class Node {
 
     addChild(node: Node) {
         this.childs.set(node.getID(), node);
-        node.setParent(this);
+        if (node.getParent()?.getID() !== this.getID()) {
+            node.setParent(this);
+        }
         if (node.getType() === 'RENDERABLE_NODE') {
-            // @ts-ignore
             DrawObjectManager.getInstance().addTexture(node.getTexture());
         }
     }
@@ -33,7 +35,9 @@ export class Node {
             this.parent = null;
             return;
         }
-        node.addChild(this);
+        if (!node.getChildById(this.getID())) {
+            node.addChild(this);
+        }
         this.parent = node;
     }
 
@@ -92,4 +96,8 @@ export class Node {
     update(dt: number) {}
 
     onExit() {}
+
+    getTexture(): TextureObject | undefined {
+        return undefined;
+    }
 }

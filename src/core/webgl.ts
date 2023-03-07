@@ -36,6 +36,11 @@ class WebGL extends EventModel<WebGLEvents> {
         this.init();
         this.currentTime = 0;
         this.isPaused = false;
+        // setup canvas
+        this.canvasToDisplaySizeMap = new Map([[this.gl.canvas, [960, 640]]]);
+        this.resizeObserver = new ResizeObserver(this._onResize.bind(this));
+        this.resizeObserver.observe(this.gl.canvas, { box: 'content-box' });
+        this._resizeCanvasToDisplaySize = this._resizeCanvasToDisplaySize.bind(this);
     }
 
     init = () => {
@@ -146,6 +151,7 @@ class WebGL extends EventModel<WebGLEvents> {
                 texture: tex,
             };
             const img = new Image();
+            img.crossOrigin = 'anonymous';
             img.addEventListener('load', () => {
                 textureInfo.width = img.width;
                 textureInfo.height = img.height;
@@ -207,9 +213,57 @@ class WebGL extends EventModel<WebGLEvents> {
         gl.drawArrays(this.gl.TRIANGLES, offset, count);
     };
 
+    _onResize(entries) {
+        for (const entry of entries) {
+            let width;
+            let height;
+            let dpr = window.devicePixelRatio;
+            if (entry.devicePixelContentBoxSize) {
+                // NOTE: Only this path gives the correct answer
+                // The other 2 paths are an imperfect fallback
+                // for browsers that don't provide anyway to do this
+                width = entry.devicePixelContentBoxSize[0].inlineSize;
+                height = entry.devicePixelContentBoxSize[0].blockSize;
+                dpr = 1; // it's already in width and height
+            } else if (entry.contentBoxSize) {
+                if (entry.contentBoxSize[0]) {
+                    width = entry.contentBoxSize[0].inlineSize;
+                    height = entry.contentBoxSize[0].blockSize;
+                } else {
+                    // legacy
+                    width = entry.contentBoxSize.inlineSize;
+                    height = entry.contentBoxSize.blockSize;
+                }
+            } else {
+                // legacy
+                width = entry.contentRect.width;
+                height = entry.contentRect.height;
+            }
+            const displayWidth = Math.round(width * dpr);
+            const displayHeight = Math.round(height * dpr);
+            this.canvasToDisplaySizeMap.set(entry.target, [displayWidth, displayHeight]);
+        }
+    }
+
+    _resizeCanvasToDisplaySize(canvas) {
+        // Get the size the browser is displaying the canvas in device pixels.
+        const [displayWidth, displayHeight] = this.canvasToDisplaySizeMap.get(canvas);
+
+        // Check if the canvas is not the same size.
+        const needResize = canvas.width !== displayWidth || canvas.height !== displayHeight;
+
+        if (needResize) {
+            // Make the canvas the same size
+            canvas.width = displayWidth;
+            canvas.height = displayHeight;
+        }
+
+        return needResize;
+    }
+
     draw = (drawInfos = []) => {
         const gl = this.gl;
-        WebglUtils.resizeCanvasToDisplaySize(gl.canvas, window.devicePixelRatio);
+        this._resizeCanvasToDisplaySize(gl.canvas);
 
         // Tell WebGL how to convert from clip space to pixels
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);

@@ -6,7 +6,11 @@ export class RenderableNode extends Node {
     private texture?: TextureObject;
     constructor(url: string) {
         super();
-        this.texture = TextureCache.getInstance().getTexture(url);
+        this.texture = {
+            x: this.position.x,
+            y: this.position.y,
+            textureInfo: TextureCache.getInstance().getTexture(url) || { width: 0, height: 0 },
+        };
         this.type = 'RENDERABLE_NODE';
     }
 

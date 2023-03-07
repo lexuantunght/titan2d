@@ -2,7 +2,7 @@ import { TextureObject } from 'core/types';
 
 class TextureCache {
     private static instance: TextureCache | null = null;
-    private cache: Map<string, TextureObject>;
+    private cache: Map<string, TextureObject['textureInfo']>;
     private constructor() {
         this.cache = new Map();
     }
@@ -22,7 +22,7 @@ class TextureCache {
         return this.cache.get(url);
     }
 
-    setTexture(url: string, data: TextureObject) {
+    setTexture(url: string, data: TextureObject['textureInfo']) {
         this.cache.set(url, data);
     }
 

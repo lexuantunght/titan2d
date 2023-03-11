@@ -1,8 +1,9 @@
 import ClientID from 'utils/client-id';
 import { DrawObjectManager } from 'core/draw-object-manager';
-import { TextureObject } from 'core/types';
+import { TextObject, TextureObject } from 'core/types';
 import { Vec3 } from './math';
 import { GameComponentType } from './types';
+import { Component, Sprite, UIText, UITransform } from './functional';
 
 export class Node {
     protected parent: Node | null;
@@ -11,6 +12,8 @@ export class Node {
     protected name?: string;
     protected type: GameComponentType;
     protected position: Vec3;
+    protected components: Map<new () => any, any>;
+    protected anchorPoint: [number, number];
     constructor(name?: string) {
         this.id = ClientID.getInstance().next();
         this.parent = null;
@@ -18,6 +21,8 @@ export class Node {
         this.name = name;
         this.type = 'NODE';
         this.position = new Vec3();
+        this.components = new Map();
+        this.anchorPoint = [0.5, 0.5];
     }
 
     addChild(node: Node) {
@@ -25,8 +30,9 @@ export class Node {
         if (node.getParent()?.getID() !== this.getID()) {
             node.setParent(this);
         }
-        if (node.getType() === 'RENDERABLE_NODE') {
+        if (node.getType() === 'NODE') {
             DrawObjectManager.getInstance().addTexture(node.getTexture());
+            DrawObjectManager.getInstance().addText(node.getTextObject());
         }
     }
 
@@ -91,13 +97,76 @@ export class Node {
         this.position = pos;
     }
 
+    addComponent<T extends Component>(ComponentType: new () => T): T {
+        const component = new ComponentType();
+        this.components.set(ComponentType, component);
+        return component;
+    }
+
+    getComponent<T extends Component>(ComponentType: new () => T): T {
+        return this.components.get(ComponentType);
+    }
+
+    removeComponent<T extends Component>(ComponentType: new () => T) {
+        this.components.delete(ComponentType);
+    }
+
+    getAnchorPoint() {
+        return this.anchorPoint;
+    }
+
+    setAnchorPoint(x: number, y: number) {
+        this.anchorPoint = [x, y];
+    }
+
+    getTexture(): TextureObject | undefined {
+        const sprite = this.getComponent(Sprite);
+        const tranform = this.getComponent(UITransform);
+        if (!sprite || !tranform) {
+            return undefined;
+        }
+        return {
+            nodeId: this.id,
+            type: 'TEXTURE',
+            x: this.position.x,
+            y: this.position.y,
+            z: this.position.z,
+            rotation: tranform.getRotation(),
+            textureInfo: {
+                width: tranform.contentSize.width * tranform.getScale().x,
+                height: tranform.contentSize.width * tranform.getScale().y,
+                texture: sprite.getTexture()?.texture,
+            },
+        };
+    }
+
+    getTextObject(): TextObject | undefined {
+        const uiText = this.getComponent(UIText);
+        const tranform = this.getComponent(UITransform);
+        if (!uiText || !tranform) {
+            return undefined;
+        }
+        return {
+            nodeId: this.id,
+            type: 'TEXT',
+            x: this.position.x,
+            y: this.position.y,
+            z: this.position.z,
+            rotation: tranform.getRotation(),
+            text: uiText.text,
+            // @ts-ignore
+            style: {
+                fontSize: uiText.fontSize.toString(),
+                fontFamily: uiText.fontFamily,
+                fontWeight: uiText.fontWeight.toString(),
+                color: uiText.color.toHex(),
+            },
+        };
+    }
+
     onEnter() {}
 
     update(dt: number) {}
 
     onExit() {}
-
-    getTexture(): TextureObject | undefined {
-        return undefined;
-    }
 }

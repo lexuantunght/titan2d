@@ -1,1 +1,1 @@
-export type GameComponentType = 'NODE' | 'RENDERABLE_NODE' | 'SCENE';
+export type GameComponentType = 'NODE' | 'SCENE';

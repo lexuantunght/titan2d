@@ -1,38 +1,24 @@
 // @ts-nocheck
-import * as WebglUtils from './webgl-utils';
-import { m4 } from './m4';
-import TextureCache from 'core/texture-cache';
+import EventModel from 'utils/event-model';
 import { WebGLEvents } from 'core/types';
 import { DrawObjectManager } from 'core/draw-object-manager';
-import EventModel from 'utils/event-model';
-
-const vertexShaderSource = `#version 300 es
-in vec4 a_position;
-in vec2 a_texcoord;
-uniform mat4 u_matrix;
-out vec2 v_texcoord;
-void main() {
-  gl_Position = u_matrix * a_position;
-  v_texcoord = a_texcoord;
-}
-`;
-
-const fragmentShaderSource = `#version 300 es
-precision highp float;
-in vec2 v_texcoord;
-uniform sampler2D u_texture;
-out vec4 outColor;
-void main() {
-   outColor = texture(u_texture, v_texcoord);
-}
-`;
+import WebElement from 'core/web-element';
+import { vertexShaderSource, fragmentShaderSource } from 'core/shader-source';
+import WebResourceLoader from 'core/web-resource-loader';
+import { DrawInfoType } from 'core/constants';
+import { m4 } from './m4';
+import * as WebglUtils from './webgl-utils';
 
 class WebGL extends EventModel<WebGLEvents> {
     private gl: WebGL2RenderingContext;
+    private webEl: WebElement;
+    private webResLoader: WebResourceLoader;
     isPaused: boolean;
-    constructor(canvas: HTMLCanvasElement) {
+    constructor(canvas: HTMLCanvasElement, overlay: HTMLDivElement) {
         super();
         this.gl = canvas.getContext('webgl2');
+        this.webEl = new WebElement(overlay);
+        this.webResLoader = new WebResourceLoader(this.gl);
         this.init();
         this.currentTime = 0;
         this.isPaused = false;
@@ -41,6 +27,9 @@ class WebGL extends EventModel<WebGLEvents> {
         this.resizeObserver = new ResizeObserver(this._onResize.bind(this));
         this.resizeObserver.observe(this.gl.canvas, { box: 'content-box' });
         this._resizeCanvasToDisplaySize = this._resizeCanvasToDisplaySize.bind(this);
+        DrawObjectManager.getInstance().addListener('CLEANUP', (_textures, texts) =>
+            this.webEl.cleanup(texts)
+        );
     }
 
     init = () => {
@@ -120,53 +109,7 @@ class WebGL extends EventModel<WebGLEvents> {
     };
 
     loadImageAndCreateTextureInfo = (url) => {
-        return new Promise((resolve, reject) => {
-            const textureCache = TextureCache.getInstance();
-            if (textureCache.hasLoaded(url)) {
-                resolve(textureCache.getTexture(url));
-                return;
-            }
-            const gl = this.gl;
-            const tex = gl.createTexture();
-            gl.bindTexture(gl.TEXTURE_2D, tex);
-            // Fill the texture with a 1x1 blue pixel.
-            gl.texImage2D(
-                gl.TEXTURE_2D,
-                0,
-                gl.RGBA,
-                1,
-                1,
-                0,
-                gl.RGBA,
-                gl.UNSIGNED_BYTE,
-                new Uint8Array([0, 0, 255, 255])
-            );
-
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-            const textureInfo = {
-                width: 1, // we don't know the size until it loads
-                height: 1,
-                texture: tex,
-            };
-            const img = new Image();
-            img.crossOrigin = 'anonymous';
-            img.addEventListener('load', () => {
-                textureInfo.width = img.width;
-                textureInfo.height = img.height;
-
-                gl.bindTexture(gl.TEXTURE_2D, textureInfo.texture);
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-                gl.generateMipmap(gl.TEXTURE_2D);
-                textureCache.setTexture(url, textureInfo);
-                resolve(textureInfo);
-            });
-            img.addEventListener('error', () => {
-                reject(`Load assets ${url} failed`);
-            });
-            img.src = url;
-        });
+        return this.webResLoader.loadImageAndCreateTextureInfo(url);
     };
 
     pause = () => {
@@ -179,7 +122,7 @@ class WebGL extends EventModel<WebGLEvents> {
         requestAnimationFrame(this.render);
     };
 
-    drawImage = (tex, texWidth, texHeight, dstX, dstY) => {
+    drawImage = (tex, texWidth, texHeight, dstX, dstY, dstZ, rdX = 0, rdY = 0, rdZ = 0) => {
         const gl = this.gl;
         gl.useProgram(this.program);
 
@@ -198,11 +141,16 @@ class WebGL extends EventModel<WebGLEvents> {
         var matrix = m4.orthographic(0, this.gl.canvas.width, this.gl.canvas.height, 0, -1, 1);
 
         // translate our quad to dstX, dstY
-        matrix = m4.translate(matrix, dstX, dstY, 0);
+        matrix = m4.translate(matrix, dstX, dstY, dstZ);
 
         // scale our 1 unit quad
         // from 1 unit to texWidth, texHeight units
         matrix = m4.scale(matrix, texWidth, texHeight, 1);
+
+        // rotate
+        matrix = m4.xRotate(matrix, rdX);
+        matrix = m4.yRotate(matrix, rdY);
+        matrix = m4.zRotate(matrix, rdZ);
 
         // Set the matrix.
         gl.uniformMatrix4fv(this.matrixLocation, false, matrix);
@@ -273,13 +221,26 @@ class WebGL extends EventModel<WebGLEvents> {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         drawInfos.forEach((drawInfo) => {
-            this.drawImage(
-                drawInfo.textureInfo.texture,
-                drawInfo.textureInfo.width,
-                drawInfo.textureInfo.height,
-                drawInfo.x,
-                drawInfo.y
-            );
+            switch (drawInfo.type) {
+                case DrawInfoType.TEXTURE:
+                    this.drawImage(
+                        drawInfo.textureInfo.texture,
+                        drawInfo.textureInfo.width,
+                        drawInfo.textureInfo.height,
+                        drawInfo.x,
+                        drawInfo.y,
+                        drawInfo.z,
+                        drawInfo.rotation.x,
+                        drawInfo.rotation.y,
+                        drawInfo.rotation.z
+                    );
+                    break;
+                case DrawInfoType.TEXT:
+                    this.webEl.drawText(drawInfo);
+                    break;
+                default:
+                    break;
+            }
         });
     };
 

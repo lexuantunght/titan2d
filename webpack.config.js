@@ -97,7 +97,7 @@ module.exports = {
             inject: true,
         }),
         new MiniCssExtractPlugin({
-            filename: '[name].min.css',
+            filename: '[name].[contenthash].css',
         }),
         new CircularDependencyPlugin(),
     ],

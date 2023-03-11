@@ -1,10 +1,14 @@
-import { TextureObject } from 'core/types';
+import { DOMEvents, TextObject, TextureObject } from 'core/types';
+import EventModel from 'utils/event-model';
 
-export class DrawObjectManager {
+export class DrawObjectManager extends EventModel<DOMEvents> {
     private static instance: DrawObjectManager | null = null;
     private textures: TextureObject[];
+    private texts: TextObject[];
     private constructor() {
+        super();
         this.textures = [];
+        this.texts = [];
     }
 
     static getInstance() {
@@ -15,7 +19,7 @@ export class DrawObjectManager {
     }
 
     getDrawInfo() {
-        return this.textures;
+        return [...this.textures, ...this.texts];
     }
 
     addTexture(texture?: TextureObject) {
@@ -24,7 +28,15 @@ export class DrawObjectManager {
         }
     }
 
+    addText(text?: TextObject) {
+        if (text) {
+            this.texts.push(text);
+        }
+    }
+
     cleanup() {
+        this.listeners.get('CLEANUP')?.forEach((cb) => cb(this.textures, this.texts));
         this.textures = [];
+        this.texts = [];
     }
 }

@@ -11,3 +11,15 @@ export class Vec3 {
 export function v3(x = 0, y = 0, z = 0) {
     return new Vec3(x, y, z);
 }
+
+export class Size {
+    width: number;
+    height: number;
+    constructor(width = 100, height = 100) {
+        this.width = width;
+        this.height = height;
+    }
+}
+export function size(w = 100, h = 100) {
+    return new Size(w, h);
+}

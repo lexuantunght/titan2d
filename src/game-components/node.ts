@@ -59,13 +59,24 @@ export class Node {
     }
 
     removeAllChilds() {
+        if (this.childs.size === 0) {
+            return;
+        }
         this.childs.forEach((child) => {
             child.setParent(null);
+            DrawObjectManager.getInstance().removeItem(child.getID());
+            return child.removeAllChilds();
         });
     }
 
     removeChild(id: number) {
-        this.childs.get(id)?.setParent(null);
+        const child = this.childs.get(id);
+        if (!child) {
+            return;
+        }
+        child.setParent(null);
+        child.removeAllChilds();
+        DrawObjectManager.getInstance().removeItem(id);
         this.childs.delete(id);
     }
 

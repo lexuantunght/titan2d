@@ -30,6 +30,9 @@ class WebGL extends EventModel<WebGLEvents> {
         DrawObjectManager.getInstance().addListener('CLEANUP', (_textures, texts) =>
             this.webEl.cleanup(texts)
         );
+        DrawObjectManager.getInstance().addListener('REMOVE_ITEM', (nodeId) => {
+            this.webEl.removeElement(nodeId);
+        });
     }
 
     init = () => {

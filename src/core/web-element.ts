@@ -7,6 +7,7 @@ class WebElement {
         this.root = root;
         this.elemMapping = new Map();
         this.cleanup = this.cleanup.bind(this);
+        this.removeElement = this.removeElement.bind(this);
     }
 
     drawText(textObj: TextObject) {

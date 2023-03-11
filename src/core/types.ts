@@ -2,7 +2,7 @@ import { DrawInfoType } from 'core/constants';
 
 export type WebGLEvents = 'UPDATE' | 'LOAD';
 
-export type DOMEvents = 'CLEANUP';
+export type DOMEvents = 'CLEANUP' | 'REMOVE_ITEM';
 
 export type BaseObject = {
     nodeId: number;

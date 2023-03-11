@@ -39,4 +39,12 @@ export class DrawObjectManager extends EventModel<DOMEvents> {
         this.textures = [];
         this.texts = [];
     }
+
+    removeItem(nodeId: number) {
+        this.listeners.get('REMOVE_ITEM')?.forEach((cb) => cb(nodeId));
+        let idx = this.textures.findIndex((it) => it.nodeId === nodeId);
+        this.textures.splice(idx, 1);
+        idx = this.texts.findIndex((it) => it.nodeId === nodeId);
+        this.texts.splice(idx, 1);
+    }
 }

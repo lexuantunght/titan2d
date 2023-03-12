@@ -39,8 +39,8 @@ class WebElement {
         }
     }
 
-    cleanup(texts: TextObject[]) {
-        texts.forEach((textObj) => this.removeElement(textObj.nodeId));
+    cleanup(nodeIds: number[]) {
+        nodeIds.forEach((id) => this.removeElement(id));
     }
 }
 

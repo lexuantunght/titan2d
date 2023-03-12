@@ -1,6 +1,7 @@
 import WebGL from 'core/webgl';
 import { Director } from './director';
 import './element-style.css';
+import InternalUpdate from './internal-update';
 
 class Engine {
     private webgl;
@@ -31,6 +32,7 @@ class Engine {
     update(dt: number) {
         const scene = Director.getInstance().getRunningScene();
         if (scene) {
+            InternalUpdate.getInstance().update(dt);
             scene.update(dt);
         }
     }

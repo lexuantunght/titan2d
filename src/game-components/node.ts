@@ -3,7 +3,7 @@ import { DrawObjectManager } from 'core/draw-object-manager';
 import { TextObject, TextureObject } from 'core/types';
 import { Vec3 } from './math';
 import { GameComponentType } from './types';
-import { Component, Sprite, UIText, UITransform } from './functional';
+import { Animation, Component, Sprite, UIText, UITransform } from './functional';
 
 export class Node {
     protected parent: Node | null;
@@ -31,8 +31,7 @@ export class Node {
             node.setParent(this);
         }
         if (node.getType() === 'NODE') {
-            DrawObjectManager.getInstance().addTexture(node.getTexture());
-            DrawObjectManager.getInstance().addText(node.getTextObject());
+            DrawObjectManager.getInstance().addItem(node);
         }
     }
 
@@ -131,9 +130,12 @@ export class Node {
     }
 
     getTexture(): TextureObject | undefined {
-        const sprite = this.getComponent(Sprite);
+        let animOrSprite: Sprite = this.getComponent(Animation);
+        if (!animOrSprite) {
+            animOrSprite = this.getComponent(Sprite);
+        }
         const tranform = this.getComponent(UITransform);
-        if (!sprite || !tranform) {
+        if (!animOrSprite || !tranform) {
             return undefined;
         }
         return {
@@ -146,7 +148,7 @@ export class Node {
             textureInfo: {
                 width: tranform.contentSize.width * tranform.getScale().x,
                 height: tranform.contentSize.width * tranform.getScale().y,
-                texture: sprite.getTexture()?.texture,
+                texture: animOrSprite.getTexture()?.texture,
             },
         };
     }

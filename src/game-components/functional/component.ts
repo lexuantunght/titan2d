@@ -1,1 +1,5 @@
-export class Component {}
+import { Node } from 'game-components/node';
+
+export class Component {
+    node!: Node;
+}

@@ -27,8 +27,8 @@ class WebGL extends EventModel<WebGLEvents> {
         this.resizeObserver = new ResizeObserver(this._onResize.bind(this));
         this.resizeObserver.observe(this.gl.canvas, { box: 'content-box' });
         this._resizeCanvasToDisplaySize = this._resizeCanvasToDisplaySize.bind(this);
-        DrawObjectManager.getInstance().addListener('CLEANUP', (_textures, texts) =>
-            this.webEl.cleanup(texts)
+        DrawObjectManager.getInstance().addListener('CLEANUP', (nodeIds) =>
+            this.webEl.cleanup(nodeIds)
         );
         DrawObjectManager.getInstance().addListener('REMOVE_ITEM', (nodeId) => {
             this.webEl.removeElement(nodeId);

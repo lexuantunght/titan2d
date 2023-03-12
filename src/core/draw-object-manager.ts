@@ -1,14 +1,13 @@
 import { DOMEvents, TextObject, TextureObject } from 'core/types';
+import { Node } from 'game-components';
 import EventModel from 'utils/event-model';
 
 export class DrawObjectManager extends EventModel<DOMEvents> {
     private static instance: DrawObjectManager | null = null;
-    private textures: TextureObject[];
-    private texts: TextObject[];
+    private nodes: Map<number, Node>;
     private constructor() {
         super();
-        this.textures = [];
-        this.texts = [];
+        this.nodes = new Map();
     }
 
     static getInstance() {
@@ -19,32 +18,32 @@ export class DrawObjectManager extends EventModel<DOMEvents> {
     }
 
     getDrawInfo() {
-        return [...this.textures, ...this.texts];
+        const items: Array<TextureObject | TextObject> = [];
+        this.nodes.forEach((node) => {
+            const textObj = node.getTextObject();
+            if (textObj) {
+                items.push(textObj);
+                return;
+            }
+            const texture = node.getTexture();
+            if (texture) {
+                items.push(texture);
+            }
+        });
+        return items;
     }
 
-    addTexture(texture?: TextureObject) {
-        if (texture) {
-            this.textures.push(texture);
-        }
-    }
-
-    addText(text?: TextObject) {
-        if (text) {
-            this.texts.push(text);
-        }
+    addItem(item: Node) {
+        this.nodes.set(item.getID(), item);
     }
 
     cleanup() {
-        this.listeners.get('CLEANUP')?.forEach((cb) => cb(this.textures, this.texts));
-        this.textures = [];
-        this.texts = [];
+        this.listeners.get('CLEANUP')?.forEach((cb) => cb(Array.from(this.nodes.keys())));
+        this.nodes.clear();
     }
 
     removeItem(nodeId: number) {
         this.listeners.get('REMOVE_ITEM')?.forEach((cb) => cb(nodeId));
-        let idx = this.textures.findIndex((it) => it.nodeId === nodeId);
-        this.textures.splice(idx, 1);
-        idx = this.texts.findIndex((it) => it.nodeId === nodeId);
-        this.texts.splice(idx, 1);
+        this.nodes.delete(nodeId);
     }
 }

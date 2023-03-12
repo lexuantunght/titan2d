@@ -100,5 +100,8 @@ module.exports = {
             filename: '[name].[contenthash].css',
         }),
         new CircularDependencyPlugin(),
+        new CopyWebpackPlugin({
+            patterns: [{ from: 'example/res', to: 'res' }],
+        }),
     ],
 };

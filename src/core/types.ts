@@ -14,10 +14,16 @@ export type BaseObject = {
 };
 
 export type TextureObject = BaseObject & {
+    width: number;
+    height: number;
     textureInfo: {
-        width: number;
-        height: number;
+        width?: number;
+        height?: number;
         texture?: WebGLTexture | null;
+        srcX?: number;
+        srcY?: number;
+        srcWidth?: number;
+        srcHeight?: number;
     };
 };
 

@@ -1,11 +1,12 @@
 import { TextureObject } from 'core/types';
 import TextureCache from 'core/texture-cache';
 import { Component } from './component';
-import { DrawObjectManager } from 'core/draw-object-manager';
+import { Rect } from 'game-components/math';
 
 export class Sprite extends Component {
     protected texture?: TextureObject['textureInfo'];
     protected spriteFrame?: string;
+    protected sourceRect?: Rect;
     constructor() {
         super();
     }
@@ -17,6 +18,15 @@ export class Sprite extends Component {
     }
 
     getTexture() {
+        if (this.sourceRect) {
+            return {
+                ...this.texture,
+                srcX: this.sourceRect.x,
+                srcY: this.sourceRect.y,
+                srcWidth: this.sourceRect.width,
+                srcHeight: this.sourceRect.height,
+            };
+        }
         return this.texture;
     }
 }

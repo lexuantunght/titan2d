@@ -6,8 +6,8 @@ import WebElement from 'core/web-element';
 import { vertexShaderSource, fragmentShaderSource } from 'core/shader-source';
 import WebResourceLoader from 'core/web-resource-loader';
 import { DrawInfoType } from 'core/constants';
-import { m4 } from './m4';
-import * as WebglUtils from './webgl-utils';
+import { m4 } from 'core/m4';
+import * as WebglUtils from 'core/webgl-utils';
 
 class WebGL extends EventModel<WebGLEvents> {
     private gl: WebGL2RenderingContext;
@@ -125,7 +125,46 @@ class WebGL extends EventModel<WebGLEvents> {
         requestAnimationFrame(this.render);
     };
 
-    drawImage = (tex, texWidth, texHeight, dstX, dstY, dstZ, rdX = 0, rdY = 0, rdZ = 0) => {
+    drawImage = (
+        tex,
+        texWidth,
+        texHeight,
+        dstX,
+        dstY,
+        dstZ,
+        dstWidth,
+        dstHeight,
+        rdX = 0,
+        rdY = 0,
+        rdZ = 0,
+        srcX = 0,
+        srcY = 0,
+        srcWidth,
+        srcHeight
+    ) => {
+        if (dstX === undefined) {
+            dstX = srcX;
+            srcX = 0;
+        }
+        if (dstY === undefined) {
+            dstY = srcY;
+            srcY = 0;
+        }
+        if (srcWidth === undefined) {
+            srcWidth = texWidth;
+        }
+        if (srcHeight === undefined) {
+            srcHeight = texHeight;
+        }
+        if (dstWidth === undefined) {
+            dstWidth = srcWidth;
+            srcWidth = texWidth;
+        }
+        if (dstHeight === undefined) {
+            dstHeight = srcHeight;
+            srcHeight = texHeight;
+        }
+
         const gl = this.gl;
         gl.useProgram(this.program);
 
@@ -148,7 +187,7 @@ class WebGL extends EventModel<WebGLEvents> {
 
         // scale our 1 unit quad
         // from 1 unit to texWidth, texHeight units
-        matrix = m4.scale(matrix, texWidth, texHeight, 1);
+        matrix = m4.scale(matrix, dstWidth, dstHeight, 1);
 
         // rotate
         matrix = m4.xRotate(matrix, rdX);
@@ -157,6 +196,15 @@ class WebGL extends EventModel<WebGLEvents> {
 
         // Set the matrix.
         gl.uniformMatrix4fv(this.matrixLocation, false, matrix);
+
+        if (srcX && srcY && srcWidth && srcHeight) {
+            // Set source rect
+            let texMatrix = m4.translation(srcX / texWidth, srcY / texHeight, dstZ);
+            texMatrix = m4.scale(texMatrix, srcWidth / texWidth, srcHeight / texHeight, 1);
+
+            // Set the matrix.
+            gl.uniformMatrix4fv(this.matrixLocation, false, texMatrix);
+        }
 
         // draw the quad (2 triangles, 6 vertices)
         var offset = 0;
@@ -233,9 +281,15 @@ class WebGL extends EventModel<WebGLEvents> {
                         drawInfo.x,
                         drawInfo.y,
                         drawInfo.z,
+                        drawInfo.width,
+                        drawInfo.height,
                         drawInfo.rotation.x,
                         drawInfo.rotation.y,
-                        drawInfo.rotation.z
+                        drawInfo.rotation.z,
+                        drawInfo.textureInfo.srcX,
+                        drawInfo.textureInfo.srcY,
+                        drawInfo.textureInfo.srcWidth,
+                        drawInfo.textureInfo.srcHeight
                     );
                     break;
                 case DrawInfoType.TEXT:

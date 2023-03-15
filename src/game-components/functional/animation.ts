@@ -1,4 +1,5 @@
 import InternalUpdate from 'engine/internal-update';
+import { Rect } from 'game-components/math';
 import { Sprite } from './sprite';
 /**
  * spriteSheet can be a single file has all frames or multi frame files
@@ -17,7 +18,7 @@ export class Animation extends Sprite {
     constructor() {
         super();
         this.playOnLoad = false;
-        this.totalFrame = 0;
+        this.totalFrame = 1;
         this.delay = 0.25;
         this.playMode = 'normal';
         this.currentFrame = 0;
@@ -34,7 +35,10 @@ export class Animation extends Sprite {
         InternalUpdate.getInstance().removeListener('UPDATE', this.updateAnimation);
     }
 
-    setSpriteSheet(source: string | string[]) {
+    setSpriteSheet(source: string | string[], totalFrame?: number) {
+        if (totalFrame) {
+            this.totalFrame = totalFrame;
+        }
         this.spriteSheet = source;
         this.runFrame(this.currentFrame);
     }
@@ -42,6 +46,12 @@ export class Animation extends Sprite {
     private runFrame(frame: number) {
         if (Array.isArray(this.spriteSheet)) {
             this.setSpriteFrame(this.spriteSheet[frame]);
+        } else {
+            this.setSpriteFrame(this.spriteSheet);
+            if (this.texture?.width) {
+                const frameWidth = this.texture.width / this.totalFrame;
+                this.sourceRect = new Rect(frame * frameWidth, 0, frameWidth, this.texture.height);
+            }
         }
         this.currentFrame = frame;
     }

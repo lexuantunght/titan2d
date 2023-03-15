@@ -109,6 +109,7 @@ export class Node {
 
     addComponent<T extends Component>(ComponentType: new () => T): T {
         const component = new ComponentType();
+        component.node = this;
         this.components.set(ComponentType, component);
         return component;
     }
@@ -118,7 +119,11 @@ export class Node {
     }
 
     removeComponent<T extends Component>(ComponentType: new () => T) {
-        this.components.delete(ComponentType);
+        const component = this.components.get(ComponentType);
+        if (component) {
+            component.node = undefined;
+            this.components.delete(ComponentType);
+        }
     }
 
     getAnchorPoint() {
@@ -138,6 +143,7 @@ export class Node {
         if (!animOrSprite || !tranform) {
             return undefined;
         }
+        const textureObj = animOrSprite.getTexture();
         return {
             nodeId: this.id,
             type: 'TEXTURE',
@@ -145,10 +151,16 @@ export class Node {
             y: this.position.y,
             z: this.position.z,
             rotation: tranform.getRotation(),
+            width: tranform.contentSize.width * tranform.getScale().x,
+            height: tranform.contentSize.width * tranform.getScale().y,
             textureInfo: {
-                width: tranform.contentSize.width * tranform.getScale().x,
-                height: tranform.contentSize.width * tranform.getScale().y,
-                texture: animOrSprite.getTexture()?.texture,
+                width: textureObj?.width,
+                height: textureObj?.height,
+                texture: textureObj?.texture,
+                srcX: textureObj?.srcX,
+                srcY: textureObj?.srcY,
+                srcHeight: textureObj?.srcHeight,
+                srcWidth: textureObj?.srcWidth,
             },
         };
     }

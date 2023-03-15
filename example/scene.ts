@@ -9,15 +9,9 @@ class ExampleScene extends Scene {
         // );
         node.addComponent(Animation);
         const anim = node.getComponent(Animation);
-        anim.setSpriteSheet([
-            '/res/bird-fly-0.png',
-            '/res/bird-fly-1.png',
-            '/res/bird-fly-2.png',
-            '/res/bird-fly-3.png',
-        ]);
+        anim.setSpriteSheet('/res/bird-fly.png', 4);
         anim.playMode = 'loop';
         anim.delay = 0.2;
-        anim.totalFrame = 4;
         anim.play();
         this.addChild(node);
     }

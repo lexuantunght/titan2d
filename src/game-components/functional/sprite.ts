@@ -1,7 +1,8 @@
 import { TextureObject } from 'core/types';
 import TextureCache from 'core/texture-cache';
 import { Component } from './component';
-import { Rect } from 'game-components/math';
+import { Rect, Size } from 'game-components/math';
+import { UITransform } from './ui-transform';
 
 export class Sprite extends Component {
     protected texture?: TextureObject['textureInfo'];
@@ -14,7 +15,22 @@ export class Sprite extends Component {
     setSpriteFrame(url: string) {
         const texture = TextureCache.getInstance().getTexture(url);
         this.texture = texture;
+        const transform = this.node.getComponent(UITransform);
+        if (transform) {
+            transform.contentSize = new Size(texture?.width, texture?.height);
+        }
         this.spriteFrame = url;
+    }
+
+    setSourceRect(rect: Rect) {
+        this.sourceRect = rect;
+        const transform = this.node.getComponent(UITransform);
+        if (transform) {
+            transform.contentSize = new Size(
+                Math.min(this.texture?.width || 0, rect.width),
+                Math.min(this.texture?.height || 0, rect.height)
+            );
+        }
     }
 
     getTexture() {

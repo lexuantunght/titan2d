@@ -50,6 +50,7 @@ class WebGL extends EventModel<WebGLEvents> {
         // lookup uniforms
         this.matrixLocation = this.gl.getUniformLocation(program, 'u_matrix');
         this.textureLocation = this.gl.getUniformLocation(program, 'u_texture');
+        this.textureMatrixLocation = this.gl.getUniformLocation(program, 'u_textureMatrix');
 
         // Create a vertex array object (attribute state)
         const vao = this.gl.createVertexArray();
@@ -137,8 +138,8 @@ class WebGL extends EventModel<WebGLEvents> {
         rdX = 0,
         rdY = 0,
         rdZ = 0,
-        srcX = 0,
-        srcY = 0,
+        srcX,
+        srcY,
         srcWidth,
         srcHeight
     ) => {
@@ -164,7 +165,6 @@ class WebGL extends EventModel<WebGLEvents> {
             dstHeight = srcHeight;
             srcHeight = texHeight;
         }
-
         const gl = this.gl;
         gl.useProgram(this.program);
 
@@ -197,14 +197,11 @@ class WebGL extends EventModel<WebGLEvents> {
         // Set the matrix.
         gl.uniformMatrix4fv(this.matrixLocation, false, matrix);
 
-        if (srcX && srcY && srcWidth && srcHeight) {
-            // Set source rect
-            let texMatrix = m4.translation(srcX / texWidth, srcY / texHeight, dstZ);
-            texMatrix = m4.scale(texMatrix, srcWidth / texWidth, srcHeight / texHeight, 1);
+        let texMatrix = m4.translation(srcX / texWidth, srcY / texHeight, dstZ);
+        texMatrix = m4.scale(texMatrix, srcWidth / texWidth, srcHeight / texHeight, 1);
 
-            // Set the matrix.
-            gl.uniformMatrix4fv(this.matrixLocation, false, texMatrix);
-        }
+        // Set the texture matrix.
+        gl.uniformMatrix4fv(this.textureMatrixLocation, false, texMatrix);
 
         // draw the quad (2 triangles, 6 vertices)
         var offset = 0;

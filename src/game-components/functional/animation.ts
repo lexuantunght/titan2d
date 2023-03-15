@@ -50,7 +50,9 @@ export class Animation extends Sprite {
             this.setSpriteFrame(this.spriteSheet);
             if (this.texture?.width) {
                 const frameWidth = this.texture.width / this.totalFrame;
-                this.sourceRect = new Rect(frame * frameWidth, 0, frameWidth, this.texture.height);
+                this.setSourceRect(
+                    new Rect(frame * frameWidth, 0, frameWidth, this.texture.height)
+                );
             }
         }
         this.currentFrame = frame;

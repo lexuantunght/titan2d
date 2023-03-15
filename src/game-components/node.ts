@@ -152,7 +152,7 @@ export class Node {
             z: this.position.z,
             rotation: tranform.getRotation(),
             width: tranform.contentSize.width * tranform.getScale().x,
-            height: tranform.contentSize.width * tranform.getScale().y,
+            height: tranform.contentSize.height * tranform.getScale().y,
             textureInfo: {
                 width: textureObj?.width,
                 height: textureObj?.height,

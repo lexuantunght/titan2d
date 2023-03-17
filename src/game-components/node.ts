@@ -1,11 +1,12 @@
 import ClientID from 'utils/client-id';
 import { DrawObjectManager } from 'core/draw-object-manager';
 import { TextObject, TextureObject } from 'core/types';
+import EventModel from 'utils/event-model-v2';
 import { Vec3 } from './math';
-import { GameComponentType } from './types';
+import { GameComponentType, NodeEventMap } from './types';
 import { Animation, Component, Sprite, UIText, UITransform } from './functional';
 
-export class Node {
+export class Node extends EventModel<NodeEventMap> {
     protected parent: Node | null;
     protected childs: Map<number, Node>;
     protected id: number;
@@ -15,6 +16,7 @@ export class Node {
     protected components: Map<new () => any, any>;
     protected anchorPoint: [number, number];
     constructor(name?: string) {
+        super();
         this.id = ClientID.getInstance().next();
         this.parent = null;
         this.childs = new Map();

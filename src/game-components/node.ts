@@ -153,6 +153,7 @@ export class Node {
             rotation: tranform.getRotation(),
             width: tranform.contentSize.width * tranform.getScale().x,
             height: tranform.contentSize.height * tranform.getScale().y,
+            anchor: this.anchorPoint,
             textureInfo: {
                 width: textureObj?.width,
                 height: textureObj?.height,
@@ -179,6 +180,7 @@ export class Node {
             z: this.position.z,
             rotation: tranform.getRotation(),
             text: uiText.text,
+            anchor: this.anchorPoint,
             // @ts-ignore
             style: {
                 fontSize: uiText.fontSize.toString(),

@@ -126,43 +126,32 @@ class WebGL extends EventModel<WebGLEvents> {
         requestAnimationFrame(this.render);
     };
 
-    drawImage = (
-        tex,
-        texWidth,
-        texHeight,
-        dstX,
-        dstY,
-        dstZ,
-        dstWidth,
-        dstHeight,
-        rdX = 0,
-        rdY = 0,
-        rdZ = 0,
-        srcX,
-        srcY,
-        srcWidth,
-        srcHeight
-    ) => {
-        if (dstX === undefined) {
-            dstX = srcX;
-            srcX = 0;
-        }
-        if (dstY === undefined) {
-            dstY = srcY;
-            srcY = 0;
-        }
+    drawImage = (drawInfo) => {
+        const {
+            x: dstX,
+            y: dstY,
+            z: dstZ,
+            rotation,
+            width: dstWidth,
+            height: dstHeight,
+            textureInfo,
+            anchor,
+        } = drawInfo;
+        const { x: rdX, y: rdY, z: rdZ } = rotation;
+        const {
+            width: texWidth,
+            height: texHeight,
+            texture: tex,
+            srcX = 0,
+            srcY = 0,
+            srcHeight,
+            srcWidth,
+        } = textureInfo;
+
         if (srcWidth === undefined) {
             srcWidth = texWidth;
         }
         if (srcHeight === undefined) {
-            srcHeight = texHeight;
-        }
-        if (dstWidth === undefined) {
-            dstWidth = srcWidth;
-            srcWidth = texWidth;
-        }
-        if (dstHeight === undefined) {
-            dstHeight = srcHeight;
             srcHeight = texHeight;
         }
         const gl = this.gl;
@@ -171,7 +160,7 @@ class WebGL extends EventModel<WebGLEvents> {
         // Setup the attributes for the quad
         gl.bindVertexArray(this.vao);
 
-        var textureUnit = 0;
+        let textureUnit = 0;
         // the shader we're putting the texture on texture unit 0
         gl.uniform1i(this.textureLocation, textureUnit);
 
@@ -180,7 +169,8 @@ class WebGL extends EventModel<WebGLEvents> {
         gl.bindTexture(this.gl.TEXTURE_2D, tex);
 
         // this matrix will convert from pixels to clip space
-        var matrix = m4.orthographic(0, this.gl.canvas.width, this.gl.canvas.height, 0, -1, 1);
+        let matrix = m4.orthographic(0, this.gl.canvas.width, this.gl.canvas.height, 0, -1, 1);
+        let moveOriginMatrix = m4.translation(-anchor[0], -anchor[1], 0);
 
         // translate our quad to dstX, dstY
         matrix = m4.translate(matrix, dstX, dstY, dstZ);
@@ -194,13 +184,15 @@ class WebGL extends EventModel<WebGLEvents> {
         matrix = m4.yRotate(matrix, rdY);
         matrix = m4.zRotate(matrix, rdZ);
 
+        // anchor point
+        matrix = m4.multiply(matrix, moveOriginMatrix);
+
         // Set the matrix.
         gl.uniformMatrix4fv(this.matrixLocation, false, matrix);
 
-        let texMatrix = m4.translation(srcX / texWidth, srcY / texHeight, dstZ);
+        // Source rect
+        let texMatrix = m4.translation(srcX / texWidth, srcY / texHeight, 0);
         texMatrix = m4.scale(texMatrix, srcWidth / texWidth, srcHeight / texHeight, 1);
-
-        // Set the texture matrix.
         gl.uniformMatrix4fv(this.textureMatrixLocation, false, texMatrix);
 
         // draw the quad (2 triangles, 6 vertices)
@@ -271,23 +263,7 @@ class WebGL extends EventModel<WebGLEvents> {
         drawInfos.forEach((drawInfo) => {
             switch (drawInfo.type) {
                 case DrawInfoType.TEXTURE:
-                    this.drawImage(
-                        drawInfo.textureInfo.texture,
-                        drawInfo.textureInfo.width,
-                        drawInfo.textureInfo.height,
-                        drawInfo.x,
-                        drawInfo.y,
-                        drawInfo.z,
-                        drawInfo.width,
-                        drawInfo.height,
-                        drawInfo.rotation.x,
-                        drawInfo.rotation.y,
-                        drawInfo.rotation.z,
-                        drawInfo.textureInfo.srcX,
-                        drawInfo.textureInfo.srcY,
-                        drawInfo.textureInfo.srcWidth,
-                        drawInfo.textureInfo.srcHeight
-                    );
+                    this.drawImage(drawInfo);
                     break;
                 case DrawInfoType.TEXT:
                     this.webEl.drawText(drawInfo);

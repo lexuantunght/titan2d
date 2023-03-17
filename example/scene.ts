@@ -1,4 +1,4 @@
-import { Scene, Animation, Node, UITransform } from '../index';
+import { Scene, Animation, Node, UITransform, Vec3 } from '../index';
 
 class ExampleScene extends Scene {
     onEnter() {
@@ -13,6 +13,7 @@ class ExampleScene extends Scene {
         anim.playMode = 'loop';
         anim.delay = 0.2;
         anim.play();
+        node.setPosition(new Vec3(100, 100));
         this.addChild(node);
     }
 }

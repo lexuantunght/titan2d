@@ -1,10 +1,11 @@
-import { Line, Rect, Vec3 } from 'game-components/math';
+import { Rect } from 'game-components/math';
 
-export function isIntersectRect(from: Rect, target: Rect) {}
+export function isIntersectRect(from: Rect, target: Rect) {
+    // no horizontal overlap
+    if (from.x >= target.x + target.width || target.x >= from.x + from.width) return false;
 
-/**
- * Check if 2 lines (limit length) have intersection
- * @param from first line
- * @param to second line
- */
-export function isIntersectLine(from: Line, to: Line) {}
+    // no vertical overlap
+    if (from.y >= target.y + target.height || target.y >= from.y + from.height) return false;
+
+    return true;
+}

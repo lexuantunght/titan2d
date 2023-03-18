@@ -8,6 +8,8 @@ import WebResourceLoader from 'core/web-resource-loader';
 import { DrawInfoType } from 'core/constants';
 import { m4 } from 'core/m4';
 import * as WebglUtils from 'core/webgl-utils';
+import { Director } from 'engine/director';
+import { Size } from 'game-components/math';
 
 class WebGL extends EventModel<WebGLEvents> {
     private gl: WebGL2RenderingContext;
@@ -244,6 +246,7 @@ class WebGL extends EventModel<WebGLEvents> {
             // Make the canvas the same size
             canvas.width = displayWidth;
             canvas.height = displayHeight;
+            Director.getInstance().viewSize = new Size(displayWidth, displayHeight);
         }
 
         return needResize;

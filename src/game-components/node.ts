@@ -5,6 +5,7 @@ import EventModel from 'utils/event-model-v2';
 import { Vec3 } from './math';
 import { GameComponentType, NodeEventMap } from './types';
 import { Animation, Component, Sprite, UIText, UITransform } from './functional';
+import { Director } from 'engine/director';
 
 export class Node extends EventModel<NodeEventMap> {
     protected parent: Node | null;
@@ -146,6 +147,8 @@ export class Node extends EventModel<NodeEventMap> {
             return undefined;
         }
         const textureObj = animOrSprite.getTexture();
+        const width = tranform.contentSize.width * tranform.getScale().x;
+        const height = tranform.contentSize.height * tranform.getScale().y;
         return {
             nodeId: this.id,
             type: 'TEXTURE',
@@ -153,8 +156,8 @@ export class Node extends EventModel<NodeEventMap> {
             y: this.position.y,
             z: this.position.z,
             rotation: tranform.getRotation(),
-            width: tranform.contentSize.width * tranform.getScale().x,
-            height: tranform.contentSize.height * tranform.getScale().y,
+            width,
+            height,
             anchor: this.anchorPoint,
             textureInfo: {
                 width: textureObj?.width,

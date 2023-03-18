@@ -1,13 +1,17 @@
 import { DOMEvents, TextObject, TextureObject } from 'core/types';
-import { Node } from 'game-components';
+import { Rect } from 'game-components/math';
+import { Node } from 'game-components/node';
 import EventModel from 'utils/event-model';
+import * as GeometryUtils from 'utils/geometry';
 
 export class DrawObjectManager extends EventModel<DOMEvents> {
     private static instance: DrawObjectManager | null = null;
     private nodes: Map<number, Node>;
+    public renderBound: Rect;
     private constructor() {
         super();
         this.nodes = new Map();
+        this.renderBound = new Rect();
     }
 
     static getInstance() {
@@ -26,7 +30,13 @@ export class DrawObjectManager extends EventModel<DOMEvents> {
                 return;
             }
             const texture = node.getTexture();
-            if (texture) {
+            if (
+                texture &&
+                GeometryUtils.isIntersectRect(
+                    this.renderBound,
+                    new Rect(texture.x, texture.y, texture.width, texture.height)
+                )
+            ) {
                 items.push(texture);
             }
         });

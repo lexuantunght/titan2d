@@ -7,6 +7,37 @@ export class Vec3 {
         this.y = y;
         this.z = z;
     }
+
+    isEqualTo(other: Vec3) {
+        let kx: string | number = 1;
+        let ky: string | number = 1;
+        let kz: string | number = 1;
+        if (this.x === 0) {
+            if (other.x !== 0) {
+                return false;
+            }
+            kx = 'N';
+        } else {
+            kx = other.x / this.x;
+        }
+        if (this.y === 0) {
+            if (other.y !== 0) {
+                return false;
+            }
+            ky = 'N';
+        } else {
+            ky = other.y / this.y;
+        }
+        if (this.z === 0) {
+            if (other.z !== 0) {
+                return false;
+            }
+            kz = 'N';
+        } else {
+            kz = other.z / this.z;
+        }
+        return kx === ky && ky === kz;
+    }
 }
 export function v3(x = 0, y = 0, z = 0) {
     return new Vec3(x, y, z);

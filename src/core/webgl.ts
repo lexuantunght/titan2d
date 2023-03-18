@@ -129,7 +129,7 @@ class WebGL extends EventModel<WebGLEvents> {
     };
 
     drawImage = (drawInfo) => {
-        const {
+        let {
             x: dstX,
             y: dstY,
             z: dstZ,
@@ -139,8 +139,8 @@ class WebGL extends EventModel<WebGLEvents> {
             textureInfo,
             anchor,
         } = drawInfo;
-        const { x: rdX, y: rdY, z: rdZ } = rotation;
-        const {
+        let { x: rdX, y: rdY, z: rdZ } = rotation;
+        let {
             width: texWidth,
             height: texHeight,
             texture: tex,

@@ -12,11 +12,11 @@ export type BaseObject = {
     rotation: { x: number; y: number; z: number };
     type: keyof typeof DrawInfoType;
     anchor: [number, number];
+    width: number;
+    height: number;
 };
 
 export type TextureObject = BaseObject & {
-    width: number;
-    height: number;
     textureInfo: {
         width?: number;
         height?: number;

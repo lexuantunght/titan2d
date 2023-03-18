@@ -20,6 +20,8 @@ class WebElement {
         textEl.textContent = textObj.text;
         textEl.style.left = textObj.x + 'px';
         textEl.style.top = textObj.y + 'px';
+        textEl.style.height = textObj.height + 'px';
+        textEl.style.width = textObj.width + 'px';
         textEl.style.transform = `translate(${-textObj.anchor[0] * 100}%, ${
             -textObj.anchor[1] * 100
         }%)`;

@@ -25,7 +25,13 @@ export class DrawObjectManager extends EventModel<DOMEvents> {
         const items: Array<TextureObject | TextObject> = [];
         this.nodes.forEach((node) => {
             const textObj = node.getTextObject();
-            if (textObj) {
+            if (
+                textObj &&
+                GeometryUtils.isIntersectRect(
+                    this.renderBound,
+                    new Rect(textObj.x, textObj.y, textObj.width, textObj.height)
+                )
+            ) {
                 items.push(textObj);
                 return;
             }

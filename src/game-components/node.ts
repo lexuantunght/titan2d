@@ -177,6 +177,8 @@ export class Node extends EventModel<NodeEventMap> {
         if (!uiText || !tranform) {
             return undefined;
         }
+        const width = tranform.contentSize.width * tranform.getScale().x;
+        const height = tranform.contentSize.height * tranform.getScale().y;
         return {
             nodeId: this.id,
             type: 'TEXT',
@@ -186,6 +188,8 @@ export class Node extends EventModel<NodeEventMap> {
             rotation: tranform.getRotation(),
             text: uiText.text,
             anchor: this.anchorPoint,
+            width,
+            height,
             // @ts-ignore
             style: {
                 fontSize: uiText.fontSize.toString(),

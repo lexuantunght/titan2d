@@ -18,8 +18,11 @@ class WebElement {
             textEl.style.position = 'absolute';
         }
         textEl.textContent = textObj.text;
-        textEl.style.left = textObj.x.toString();
-        textEl.style.top = textObj.y.toString();
+        textEl.style.left = textObj.x + 'px';
+        textEl.style.top = textObj.y + 'px';
+        textEl.style.transform = `translate(${-textObj.anchor[0] * 100}%, ${
+            -textObj.anchor[1] * 100
+        }%)`;
         if (textObj.style) {
             textEl.style.fontSize = textObj.style.fontSize;
             textEl.style.fontWeight = textObj.style.fontWeight;

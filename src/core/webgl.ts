@@ -8,8 +8,6 @@ import WebResourceLoader from 'core/web-resource-loader';
 import { DrawInfoType } from 'core/constants';
 import { m4 } from 'core/m4';
 import * as WebglUtils from 'core/webgl-utils';
-import { Director } from 'engine/director';
-import { Size } from 'game-components/math';
 
 class WebGL extends EventModel<WebGLEvents> {
     private gl: WebGL2RenderingContext;
@@ -18,7 +16,7 @@ class WebGL extends EventModel<WebGLEvents> {
     isPaused: boolean;
     constructor(canvas: HTMLCanvasElement, overlay: HTMLDivElement) {
         super();
-        this.gl = canvas.getContext('webgl2');
+        this.gl = canvas.getContext('webgl2', { antialias: true });
         this.webEl = new WebElement(overlay);
         this.webResLoader = new WebResourceLoader(this.gl);
         this.init();
@@ -112,6 +110,9 @@ class WebGL extends EventModel<WebGLEvents> {
             stride,
             offset
         );
+
+        this.gl.enable(this.gl.BLEND);
+        this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
     };
 
     loadImageAndCreateTextureInfo = (url) => {
@@ -246,7 +247,7 @@ class WebGL extends EventModel<WebGLEvents> {
             // Make the canvas the same size
             canvas.width = displayWidth;
             canvas.height = displayHeight;
-            Director.getInstance().viewSize = new Size(displayWidth, displayHeight);
+            this.listeners.get('RESIZE')?.forEach((cb) => cb(displayWidth, displayHeight));
         }
 
         return needResize;
@@ -260,7 +261,7 @@ class WebGL extends EventModel<WebGLEvents> {
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
         // Clear the canvas
-        gl.clearColor(0, 0, 0, 0);
+        gl.clearColor(0, 0, 0, 1);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         drawInfos.forEach((drawInfo) => {

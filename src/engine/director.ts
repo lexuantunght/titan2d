@@ -1,6 +1,6 @@
 import { Scene } from 'game-components/scene';
 import { Size } from 'game-components/math';
-import EventModel from 'utils/event-model';
+import EventModel from 'utils/event-model-v2';
 import { DirectorEventType } from 'engine/types';
 import { DrawObjectManager } from 'core/draw-object-manager';
 
@@ -14,6 +14,7 @@ export class Director extends EventModel<DirectorEventType> {
         this.currentScene = null;
         this.isRunning = false;
         this._viewSize = new Size();
+        this.resize = this.resize.bind(this);
     }
 
     static getInstance() {
@@ -29,6 +30,12 @@ export class Director extends EventModel<DirectorEventType> {
 
     set viewSize(size: Size) {
         this._viewSize = size;
+    }
+
+    resize(width: number, height: number) {
+        const _size = new Size(width, height);
+        this.viewSize = _size;
+        this.listeners.get('RESIZE')?.forEach((cb) => cb(_size));
     }
 
     getRunningScene() {

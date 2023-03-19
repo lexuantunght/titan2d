@@ -76,4 +76,8 @@ export class Animation extends Sprite {
             this.timeCount += dt;
         }
     }
+
+    cleanup() {
+        InternalUpdate.getInstance().removeListener('UPDATE', this.updateAnimation);
+    }
 }

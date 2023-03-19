@@ -1,6 +1,6 @@
 import { DrawInfoType } from 'core/constants';
 
-export type WebGLEvents = 'UPDATE' | 'LOAD';
+export type WebGLEvents = 'UPDATE' | 'LOAD' | 'RESIZE';
 
 export type DOMEvents = 'CLEANUP' | 'REMOVE_ITEM';
 

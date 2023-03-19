@@ -18,6 +18,7 @@ class Engine {
         Director.getInstance().addListener('RESUME', this.resume.bind(this));
         this.webgl = new WebGL(this.canvas, this.overlay);
         this.webgl.addListener('UPDATE', this.update.bind(this));
+        this.webgl.addListener('RESIZE', this.resize.bind(this));
         this.webgl.start();
     }
 
@@ -27,6 +28,10 @@ class Engine {
 
     private resume() {
         this.webgl.resume();
+    }
+
+    private resize(width: number, height: number) {
+        Director.getInstance().resize(width, height);
     }
 
     update(dt: number) {

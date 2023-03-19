@@ -2,10 +2,10 @@ import ClientID from 'utils/client-id';
 import { DrawObjectManager } from 'core/draw-object-manager';
 import { TextObject, TextureObject } from 'core/types';
 import EventModel from 'utils/event-model-v2';
+import * as GeometryUtils from 'utils/geometry';
 import { Vec3 } from './math';
 import { GameComponentType, NodeEventMap } from './types';
 import { Animation, Component, Sprite, UIText, UITransform } from './functional';
-import { Director } from 'engine/director';
 
 export class Node extends EventModel<NodeEventMap> {
     protected parent: Node | null;
@@ -124,7 +124,8 @@ export class Node extends EventModel<NodeEventMap> {
     removeComponent<T extends Component>(ComponentType: new () => T) {
         const component = this.components.get(ComponentType);
         if (component) {
-            component.node = undefined;
+            component.cleanup();
+            component.node = null;
             this.components.delete(ComponentType);
         }
     }
@@ -149,12 +150,13 @@ export class Node extends EventModel<NodeEventMap> {
         const textureObj = animOrSprite.getTexture();
         const width = tranform.contentSize.width * tranform.getScale().x;
         const height = tranform.contentSize.height * tranform.getScale().y;
+        const position = GeometryUtils.localCoordinationToGlobal(this.position, this.parent);
         return {
             nodeId: this.id,
             type: 'TEXTURE',
-            x: this.position.x,
-            y: this.position.y,
-            z: this.position.z,
+            x: position.x,
+            y: position.y,
+            z: position.z,
             rotation: tranform.getRotation(),
             width,
             height,

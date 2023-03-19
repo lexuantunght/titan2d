@@ -1,22 +1,28 @@
 import { Director } from 'engine/director';
+import { DrawObjectManager } from 'core/draw-object-manager';
 import { Camera, UITransform } from './functional';
 import { Node } from './node';
 import { Rect, Size } from './math';
-import { UIWidget } from './layout';
 
 export class Scene extends Node {
-    protected carmera: Camera;
     constructor() {
         super();
         this.type = 'SCENE';
-        this.carmera = new Camera();
+        this.onResize = this.onResize.bind(this);
         const viewSize = Director.getInstance().viewSize;
-        this.carmera.setBound(new Rect(0, 0, viewSize.width, viewSize.height));
+        this.addComponent(Camera).setBound(new Rect(0, 0, viewSize.width, viewSize.height));
         this.addComponent(UITransform).contentSize = viewSize;
-        this.addComponent(UIWidget).widget = { left: 0, top: 0, right: 0, bottom: 0 };
+        DrawObjectManager.getInstance().renderBound = this.getComponent(Camera).getBound();
+        Director.getInstance().addListener('RESIZE', this.onResize);
     }
 
-    getCamera() {
-        return this.carmera;
+    private onResize(size: Size) {
+        this.getComponent(UITransform).contentSize = new Size(size.width, size.height);
+        this.getComponent(Camera).setBound(new Rect(0, 0, size.width, size.height));
+        DrawObjectManager.getInstance().renderBound = this.getComponent(Camera).getBound();
+    }
+
+    onExit() {
+        Director.getInstance().removeListener('RESIZE', this.onResize);
     }
 }

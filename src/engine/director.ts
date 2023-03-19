@@ -3,6 +3,7 @@ import { Size } from 'game-components/math';
 import EventModel from 'utils/event-model-v2';
 import { DirectorEventType } from 'engine/types';
 import { DrawObjectManager } from 'core/draw-object-manager';
+import { Camera } from 'game-components/functional/camera';
 
 export class Director extends EventModel<DirectorEventType> {
     private static instance: Director | null = null;
@@ -48,7 +49,6 @@ export class Director extends EventModel<DirectorEventType> {
             this.currentScene.onExit();
         }
         DrawObjectManager.getInstance().cleanup();
-        DrawObjectManager.getInstance().renderBound = scene.getCamera().getBound();
         this.currentScene = scene;
         this.currentScene.onEnter();
         this.listeners.get('RUN_SCENE')?.forEach((cb) => cb());

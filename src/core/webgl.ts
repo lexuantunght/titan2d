@@ -16,7 +16,7 @@ class WebGL extends EventModel<WebGLEvents> {
     isPaused: boolean;
     constructor(canvas: HTMLCanvasElement, overlay: HTMLDivElement) {
         super();
-        this.gl = canvas.getContext('webgl2', { antialias: true });
+        this.gl = canvas.getContext('webgl2', { antialias: true, alpha: false });
         this.webEl = new WebElement(overlay);
         this.webResLoader = new WebResourceLoader(this.gl);
         this.init();
@@ -261,7 +261,7 @@ class WebGL extends EventModel<WebGLEvents> {
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
         // Clear the canvas
-        gl.clearColor(0, 0, 0, 0);
+        gl.clearColor(1, 1, 1, 1);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         drawInfos.forEach((drawInfo) => {

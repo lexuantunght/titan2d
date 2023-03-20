@@ -19,10 +19,14 @@ class ExampleScene extends Scene {
         // );
         node.addComponent(Sprite);
         const sp = node.getComponent(Sprite);
-        sp.setSpriteFrame('/res/parallax-space-background.png');
-        //node.addComponent(UIWidget).widget = { top: 0, left: 0, right: 0, bottom: 0 };
-        node.setPosition(new Vec3(Director.getInstance().viewSize.width / 2, 0));
+        sp.setSpriteFrame('res/parallax-space-background.png');
+        node.addComponent(UIWidget).widget = { top: 0, left: 0, right: 0, bottom: 0 };
         this.addChild(node);
+
+        const node2 = new Node();
+        node2.addComponent(UITransform).setScale(new Vec3(8, 8));
+        node2.addComponent(Sprite).setSpriteFrame('res/parallax-space-big-planet.png');
+        this.addChild(node2);
     }
 }
 

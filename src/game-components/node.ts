@@ -14,6 +14,7 @@ export class Node extends EventModel<NodeEventMap> {
     protected name?: string;
     protected type: GameComponentType;
     protected position: Vec3;
+    protected globalPosition: Vec3;
     protected components: Map<new () => any, any>;
     protected anchorPoint: [number, number];
     constructor(name?: string) {
@@ -24,6 +25,7 @@ export class Node extends EventModel<NodeEventMap> {
         this.name = name;
         this.type = 'NODE';
         this.position = new Vec3();
+        this.globalPosition = GeometryUtils.localCoordinationToGlobal(this.position, this.parent);
         this.components = new Map();
         this.anchorPoint = [0.5, 0.5];
     }
@@ -47,6 +49,7 @@ export class Node extends EventModel<NodeEventMap> {
             node.addChild(this);
         }
         this.parent = node;
+        this.globalPosition = GeometryUtils.localCoordinationToGlobal(this.position, this.parent);
     }
 
     getParent() {
@@ -108,6 +111,7 @@ export class Node extends EventModel<NodeEventMap> {
 
     setPosition(pos: Vec3) {
         this.position = pos;
+        this.globalPosition = GeometryUtils.localCoordinationToGlobal(this.position, this.parent);
     }
 
     addComponent<T extends Component>(ComponentType: new () => T): T {
@@ -150,7 +154,7 @@ export class Node extends EventModel<NodeEventMap> {
         const textureObj = animOrSprite.getTexture();
         const width = tranform.contentSize.width * tranform.getScale().x;
         const height = tranform.contentSize.height * tranform.getScale().y;
-        const position = GeometryUtils.localCoordinationToGlobal(this.position, this.parent);
+        const position = this.globalPosition;
         return {
             nodeId: this.id,
             type: 'TEXTURE',

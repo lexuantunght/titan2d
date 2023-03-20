@@ -40,7 +40,12 @@ export class DrawObjectManager extends EventModel<DOMEvents> {
                 texture &&
                 GeometryUtils.isIntersectRect(
                     this.renderBound,
-                    new Rect(texture.x, texture.y, texture.width, texture.height)
+                    new Rect(
+                        texture.x - texture.anchor[0] * texture.width,
+                        texture.y - texture.anchor[1] * texture.height,
+                        texture.width,
+                        texture.height
+                    )
                 )
             ) {
                 items.push(texture);

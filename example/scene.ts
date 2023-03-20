@@ -1,4 +1,14 @@
-import { Scene, Animation, Node, UITransform, Vec3, Sprite, Size, UIWidget } from '../index';
+import {
+    Scene,
+    Animation,
+    Node,
+    UITransform,
+    Vec3,
+    Sprite,
+    Size,
+    UIWidget,
+    Director,
+} from '../index';
 
 class ExampleScene extends Scene {
     onEnter() {
@@ -9,13 +19,9 @@ class ExampleScene extends Scene {
         // );
         node.addComponent(Sprite);
         const sp = node.getComponent(Sprite);
-        sp.setSpriteFrame('/res/parallax-space-stars.png');
+        sp.setSpriteFrame('/res/parallax-space-background.png');
         //node.addComponent(UIWidget).widget = { top: 0, left: 0, right: 0, bottom: 0 };
-        const node2 = new Node();
-        node2.addComponent(UITransform);
-        node2.addComponent(Sprite).setSpriteFrame('/res/bird-fly-0.png');
-        node2.setPosition(new Vec3(50, 50));
-        node.addChild(node2);
+        node.setPosition(new Vec3(Director.getInstance().viewSize.width / 2, 0));
         this.addChild(node);
     }
 }

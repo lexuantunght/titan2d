@@ -1,12 +1,18 @@
 {
     "name": "titan2d",
-    "version": "2.1.8",
+    "version": "2.1.10",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "files": [
+        "lib"
+    ],
     "description": "A Javascript Library for rendering 2D scene",
-    "main": "index.ts",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "cross-env NODE_ENV=development webpack-dev-server ./example/index.ts",
-        "build": "cross-env NODE_ENV=production webpack ."
+        "build": "cross-env NODE_ENV=production webpack .",
+        "build:lib": "cross-env NODE_ENV=production tsc",
+        "prepare": "npm run build:lib"
     },
     "repository": {
         "type": "git",

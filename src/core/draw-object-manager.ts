@@ -29,7 +29,12 @@ export class DrawObjectManager extends EventModel<DOMEvents> {
                 textObj &&
                 GeometryUtils.isIntersectRect(
                     this.renderBound,
-                    new Rect(textObj.x, textObj.y, textObj.width, textObj.height)
+                    new Rect(
+                        textObj.x - textObj.anchor[0] * textObj.width,
+                        textObj.y - textObj.anchor[1] * textObj.height,
+                        textObj.width,
+                        textObj.height
+                    )
                 )
             ) {
                 items.push(textObj);

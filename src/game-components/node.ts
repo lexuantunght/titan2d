@@ -188,9 +188,9 @@ export class Node extends EventModel<NodeEventMap> {
         return {
             nodeId: this.id,
             type: 'TEXT',
-            x: this.position.x,
-            y: this.position.y,
-            z: this.position.z,
+            x: this.globalPosition.x,
+            y: this.globalPosition.y,
+            z: this.globalPosition.z,
             rotation: tranform.getRotation(),
             text: uiText.text,
             anchor: this.anchorPoint,
@@ -202,6 +202,9 @@ export class Node extends EventModel<NodeEventMap> {
                 fontFamily: uiText.fontFamily,
                 fontWeight: uiText.fontWeight.toString(),
                 color: uiText.color.toHex(),
+                display: 'flex',
+                justifyContent: uiText.textAlign,
+                alignItems: uiText.verticalAlign,
             },
         };
     }

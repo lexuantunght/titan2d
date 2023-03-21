@@ -1,4 +1,5 @@
 import { TextObject } from 'core/types';
+import { Director } from 'engine/director';
 
 class WebElement {
     private root: HTMLDivElement;
@@ -18,8 +19,9 @@ class WebElement {
             textEl.style.position = 'absolute';
         }
         textEl.textContent = textObj.text;
-        textEl.style.left = textObj.x + 'px';
-        textEl.style.top = textObj.y + 'px';
+        const textElPos = this.canvasPosToWebPos(textObj.x, textObj.y);
+        textEl.style.left = textElPos.x + 'px';
+        textEl.style.top = textElPos.y + 'px';
         textEl.style.height = textObj.height + 'px';
         textEl.style.width = textObj.width + 'px';
         textEl.style.transform = `translate(${-textObj.anchor[0] * 100}%, ${
@@ -30,11 +32,24 @@ class WebElement {
             textEl.style.fontWeight = textObj.style.fontWeight;
             textEl.style.color = textObj.style.color;
             textEl.style.fontFamily = textObj.style.fontFamily;
+            textEl.style.display = textObj.style.display;
+            textEl.style.justifyContent = textObj.style.justifyContent;
+            textEl.style.alignItems = textObj.style.alignItems;
         }
         this.elemMapping.set(textObj.nodeId, textEl);
         if (!isExistedEl) {
             this.root.appendChild(textEl);
         }
+    }
+
+    private canvasPosToWebPos(x: number, y: number) {
+        const canvasSize = Director.getInstance().viewSize;
+        const ratioX = canvasSize.width / this.root.clientWidth;
+        const ratioY = canvasSize.height / this.root.clientHeight;
+        return {
+            x: x / ratioX,
+            y: y / ratioY,
+        };
     }
 
     removeElement(nodeId: number) {

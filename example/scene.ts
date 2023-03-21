@@ -8,6 +8,8 @@ import {
     Size,
     UIWidget,
     Director,
+    UIText,
+    Color,
 } from '../index';
 
 class ExampleScene extends Scene {
@@ -24,8 +26,9 @@ class ExampleScene extends Scene {
         this.addChild(node);
 
         const node2 = new Node();
-        node2.addComponent(UITransform).setScale(new Vec3(8, 8));
-        node2.addComponent(Sprite).setSpriteFrame('res/parallax-space-big-planet.png');
+        node2.addComponent(UITransform);
+        node2.addComponent(UIText).text = 'Hello World';
+        node2.getComponent(UIText).color = Color.fromHex('#ffffff');
         this.addChild(node2);
     }
 }

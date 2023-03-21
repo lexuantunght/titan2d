@@ -7,6 +7,8 @@ export class UIText extends Component {
     fontWeight: number;
     fontFamily: string;
     color: Color;
+    textAlign: 'center' | 'start' | 'end' | 'justify';
+    verticalAlign: 'start' | 'center' | 'end';
     constructor() {
         super();
         this.text = '';
@@ -14,5 +16,7 @@ export class UIText extends Component {
         this.fontWeight = 400;
         this.color = new Color();
         this.fontFamily = 'system-ui, -apple-system, sans-serif';
+        this.textAlign = 'start';
+        this.verticalAlign = 'start';
     }
 }

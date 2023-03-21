@@ -1,7 +1,7 @@
 import { Director } from 'engine/director';
-import { Size } from 'game-components/math';
-import { Component, UITransform } from 'game-components/functional';
-
+import { Size } from '../math';
+import { Component } from '../functional/component';
+import { UITransform } from '../functional/ui-transform';
 export class UIWidget extends Component {
     top?: number;
     left?: number;

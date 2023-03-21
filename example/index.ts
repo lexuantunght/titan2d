@@ -5,6 +5,7 @@ import ExampleScene from './scene';
     const game = new Game(document.getElementById('root'));
     await game.preloadImages([
         'res/parallax-space-background.png',
+        'res/parallax-space-stars.png',
         'res/parallax-space-big-planet.png',
     ]);
     Director.getInstance().runScene(new ExampleScene());

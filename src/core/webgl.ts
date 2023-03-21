@@ -16,7 +16,11 @@ class WebGL extends EventModel<WebGLEvents> {
     isPaused: boolean;
     constructor(canvas: HTMLCanvasElement, overlay: HTMLDivElement) {
         super();
-        this.gl = canvas.getContext('webgl2', { antialias: true, alpha: false });
+        this.gl = canvas.getContext('webgl2', {
+            antialias: true,
+            premultipliedAlpha: true,
+            alpha: true,
+        });
         this.webEl = new WebElement(overlay);
         this.webResLoader = new WebResourceLoader(this.gl);
         this.init();
@@ -112,7 +116,8 @@ class WebGL extends EventModel<WebGLEvents> {
         );
 
         this.gl.enable(this.gl.BLEND);
-        this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+        this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
+        this.gl.pixelStorei(this.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
     };
 
     loadImageAndCreateTextureInfo = (url) => {

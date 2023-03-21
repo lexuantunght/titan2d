@@ -198,7 +198,7 @@ export class Node extends EventModel<NodeEventMap> {
             height,
             // @ts-ignore
             style: {
-                fontSize: uiText.fontSize.toString(),
+                fontSize: uiText.fontSize + 'px',
                 fontFamily: uiText.fontFamily,
                 fontWeight: uiText.fontWeight.toString(),
                 color: uiText.color.toHex(),

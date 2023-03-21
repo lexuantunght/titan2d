@@ -1,6 +1,6 @@
 {
     "name": "titan2d",
-    "version": "2.1.5",
+    "version": "2.1.6",
     "description": "A Javascript Library for rendering 2D scene",
     "main": "index.ts",
     "scripts": {

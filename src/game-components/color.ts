@@ -44,7 +44,7 @@ export class Color {
     toHex = () => {
         let hex =
             '#' +
-            [this.red, this.green, this.blue]
+            [this.red * 255, this.green * 255, this.blue * 255]
                 .map((x) => {
                     const hex = x.toString(16);
                     return hex.length === 1 ? '0' + hex : hex;

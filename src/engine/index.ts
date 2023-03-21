@@ -1,6 +1,6 @@
 import WebGL from 'core/webgl';
 import { Director } from './director';
-import './element-style.css';
+import 'static/css/element-style.css';
 import InternalUpdate from './internal-update';
 
 class Engine {

@@ -6,7 +6,13 @@ export class Game {
         this.engine = new Engine(parent);
     }
 
-    preloadImages(urls: string[]) {
-        return this.engine.loadImages(urls);
+    /**
+     *
+     * @param urls list urls need load
+     * @param onPercentage callback percentage (0 -> 1)
+     * @returns void
+     */
+    preloadImages(urls: string[], onPercentage?: (per: number) => void) {
+        return this.engine.loadImages(urls, onPercentage);
     }
 }

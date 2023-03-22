@@ -55,9 +55,10 @@ class Engine {
         }
     }
 
-    async loadImages(urls: string[]) {
-        for (const url of urls) {
-            await this.webgl.loadImageAndCreateTextureInfo(url);
+    async loadImages(urls: string[], onPercentage?: (per: number) => void) {
+        for (let i = 0; i < urls.length; i++) {
+            await this.webgl.loadImageAndCreateTextureInfo(urls[i]);
+            onPercentage?.((i + 1) / urls.length);
         }
     }
 }

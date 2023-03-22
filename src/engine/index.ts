@@ -11,6 +11,7 @@ class Engine {
     private overlay;
     settings: EngineSettings;
     constructor(parent?: HTMLElement | null) {
+        Logger.logDev('Init engine. Thanks for using titan2d!');
         this.canvas = document.createElement('canvas');
         this.overlay = document.createElement('div');
         if (parent) {
@@ -29,6 +30,7 @@ class Engine {
         Logger.logDev('First init engine settings', this.settings);
         Director.getInstance().addListener('PAUSE', this.pause.bind(this));
         Director.getInstance().addListener('RESUME', this.resume.bind(this));
+        Director.getInstance().canvasElement = this.canvas;
         this.webgl = new WebGL(this.canvas, this.overlay);
         this.webgl.addListener('UPDATE', this.update.bind(this));
         this.webgl.addListener('RESIZE', this.resize.bind(this));

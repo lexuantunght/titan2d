@@ -1,7 +1,7 @@
 import ClientID from 'utils/client-id';
 import { DrawObjectManager } from 'core/draw-object-manager';
 import { TextObject, TextureObject } from 'core/types';
-import EventModel from 'utils/event-model-v2';
+import EventModel, { EventModelCallback } from 'utils/event-model-v2';
 import * as GeometryUtils from 'utils/geometry';
 import { Director } from 'engine/director';
 import { Size, Vec3 } from './math';
@@ -230,6 +230,28 @@ export class Node extends EventModel<NodeEventMap> {
                 alignItems: uiText.verticalAlign,
             },
         };
+    }
+
+    addListener<E extends keyof NodeEventMap>(
+        event: E,
+        callback: EventModelCallback<NodeEventMap[E]>
+    ) {
+        if (this.getType() === 'SCENE') {
+            super.addListener(event, callback);
+            return;
+        }
+        Director.getInstance().getRunningScene()?.addListener(event, callback);
+    }
+
+    removeListener<E extends keyof NodeEventMap>(
+        event: E,
+        callback: EventModelCallback<NodeEventMap[E]>
+    ) {
+        if (this.getType() === 'SCENE') {
+            super.removeListener(event, callback);
+            return;
+        }
+        Director.getInstance().getRunningScene()?.removeListener(event, callback);
     }
 
     onEnter() {}

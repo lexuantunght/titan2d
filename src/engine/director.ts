@@ -11,6 +11,7 @@ export class Director extends EventModel<DirectorEventType> {
     private isRunning: boolean;
     private _viewSize: Size;
     engineSettings!: EngineSettings;
+    canvasElement!: HTMLCanvasElement;
     private constructor() {
         super();
         this.currentScene = null;

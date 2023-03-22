@@ -9,8 +9,6 @@ export class UIWidget extends Component {
     right?: number;
     constructor() {
         super();
-        this.onFollowingResize = this.onFollowingResize.bind(this);
-        Director.getInstance().addListener('RESIZE', this.onFollowingResize);
     }
 
     set widget(widget: { top?: number; left?: number; bottom?: number; right?: number }) {
@@ -19,10 +17,10 @@ export class UIWidget extends Component {
         this.left = left;
         this.bottom = bottom;
         this.right = right;
-        this.onFollowingResize(Director.getInstance().viewSize);
+        this.applyResize(Director.getInstance().viewSize);
     }
 
-    private onFollowingResize(size: Size) {
+    private applyResize(size: Size) {
         if (this.node) {
             let width = size.width;
             let height = size.height;
@@ -48,7 +46,5 @@ export class UIWidget extends Component {
         }
     }
 
-    cleanup() {
-        Director.getInstance().removeListener('RESIZE', this.onFollowingResize);
-    }
+    cleanup() {}
 }

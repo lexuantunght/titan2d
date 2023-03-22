@@ -7,3 +7,12 @@ export type DirectorEventType = {
     RUN_SCENE: Scene;
     RESIZE: Size;
 };
+
+export type EngineSettings = {
+    fitWidth: boolean;
+    fitHeight: boolean;
+    designResolution: {
+        width: number;
+        height: number;
+    };
+};

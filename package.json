@@ -1,6 +1,6 @@
 {
     "name": "titan2d",
-    "version": "2.1.12",
+    "version": "2.1.13",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
     "files": [
@@ -11,7 +11,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "cross-env NODE_ENV=development webpack-dev-server ./example/index.ts",
         "build": "cross-env NODE_ENV=production webpack .",
-        "build:lib": "cross-env NODE_ENV=production ttsc && copyfiles -u 1 ./src/static/**/* ./lib",
+        "build:lib": "cross-env NODE_ENV=production rm -rf ./lib && ttsc && copyfiles -u 1 ./src/static/**/* ./lib",
         "prepare": "npm run build:lib"
     },
     "repository": {

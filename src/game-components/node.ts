@@ -3,7 +3,8 @@ import { DrawObjectManager } from 'core/draw-object-manager';
 import { TextObject, TextureObject } from 'core/types';
 import EventModel from 'utils/event-model-v2';
 import * as GeometryUtils from 'utils/geometry';
-import { Vec3 } from './math';
+import { Director } from 'engine/director';
+import { Size, Vec3 } from './math';
 import { GameComponentType, NodeEventMap } from './types';
 import { Animation, Component, Sprite, UIText, UITransform } from './functional';
 
@@ -142,6 +143,26 @@ export class Node extends EventModel<NodeEventMap> {
         this.anchorPoint = [x, y];
     }
 
+    private toRealSize(size: Size) {
+        const viewSize = Director.getInstance().viewSize;
+        const originSize = Director.getInstance().engineSettings.designResolution;
+        let ratio = originSize.height / viewSize.height;
+        if (Director.getInstance().engineSettings.fitWidth) {
+            ratio = originSize.width / viewSize.width;
+        }
+        return new Size(size.width / ratio, size.height / ratio);
+    }
+
+    private toRealPosition(pos: Vec3) {
+        const viewSize = Director.getInstance().viewSize;
+        const originSize = Director.getInstance().engineSettings.designResolution;
+        let ratio = originSize.height / viewSize.height;
+        if (Director.getInstance().engineSettings.fitWidth) {
+            ratio = originSize.width / viewSize.width;
+        }
+        return new Vec3(pos.x / ratio, pos.y / ratio, pos.z / ratio);
+    }
+
     getTexture(): TextureObject | undefined {
         let animOrSprite: Sprite = this.getComponent(Animation);
         if (!animOrSprite) {
@@ -152,9 +173,10 @@ export class Node extends EventModel<NodeEventMap> {
             return undefined;
         }
         const textureObj = animOrSprite.getTexture();
-        const width = tranform.contentSize.width * tranform.getScale().x;
-        const height = tranform.contentSize.height * tranform.getScale().y;
-        const position = this.globalPosition;
+        const realSize = this.toRealSize(tranform.contentSize);
+        const width = realSize.width * tranform.getScale().x;
+        const height = realSize.height * tranform.getScale().y;
+        const position = this.toRealPosition(this.globalPosition);
         return {
             nodeId: this.id,
             type: 'TEXTURE',
@@ -185,12 +207,13 @@ export class Node extends EventModel<NodeEventMap> {
         }
         const width = tranform.contentSize.width * tranform.getScale().x;
         const height = tranform.contentSize.height * tranform.getScale().y;
+        const position = this.toRealPosition(this.globalPosition);
         return {
             nodeId: this.id,
             type: 'TEXT',
-            x: this.globalPosition.x,
-            y: this.globalPosition.y,
-            z: this.globalPosition.z,
+            x: position.x,
+            y: position.y,
+            z: position.z,
             rotation: tranform.getRotation(),
             text: uiText.text,
             anchor: this.anchorPoint,

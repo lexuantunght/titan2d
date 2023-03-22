@@ -1,7 +1,7 @@
 import { Scene } from 'game-components/scene';
 import { Size } from 'game-components/math';
 import EventModel from 'utils/event-model-v2';
-import { DirectorEventType } from 'engine/types';
+import { DirectorEventType, EngineSettings } from 'engine/types';
 import { DrawObjectManager } from 'core/draw-object-manager';
 import { Camera } from 'game-components/functional/camera';
 
@@ -10,6 +10,7 @@ export class Director extends EventModel<DirectorEventType> {
     private currentScene: Scene | null;
     private isRunning: boolean;
     private _viewSize: Size;
+    engineSettings!: EngineSettings;
     private constructor() {
         super();
         this.currentScene = null;

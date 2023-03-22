@@ -2,11 +2,14 @@ import WebGL from 'core/webgl';
 import { Director } from './director';
 import '../static/css/element-style.css';
 import InternalUpdate from './internal-update';
+import { EngineSettings } from './types';
+import Logger from 'utils/logger';
 
 class Engine {
     private webgl;
     private canvas;
     private overlay;
+    settings: EngineSettings;
     constructor(parent?: HTMLElement | null) {
         this.canvas = document.createElement('canvas');
         this.overlay = document.createElement('div');
@@ -14,6 +17,16 @@ class Engine {
             parent.appendChild(this.canvas);
             parent.appendChild(this.overlay);
         }
+        this.settings = {
+            fitHeight: false,
+            fitWidth: true,
+            designResolution: {
+                width: (parent || this.canvas).clientWidth * window.devicePixelRatio,
+                height: (parent || this.canvas).clientHeight * window.devicePixelRatio,
+            },
+        };
+        Director.getInstance().engineSettings = this.settings;
+        Logger.logDev('First init engine settings', this.settings);
         Director.getInstance().addListener('PAUSE', this.pause.bind(this));
         Director.getInstance().addListener('RESUME', this.resume.bind(this));
         this.webgl = new WebGL(this.canvas, this.overlay);

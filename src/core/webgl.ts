@@ -18,8 +18,8 @@ class WebGL extends EventModel<WebGLEvents> {
         super();
         this.gl = canvas.getContext('webgl2', {
             antialias: true,
-            premultipliedAlpha: true,
-            alpha: true,
+            premultipliedAlpha: false,
+            alpha: false,
         });
         this.webEl = new WebElement(overlay);
         this.webResLoader = new WebResourceLoader(this.gl);
@@ -103,7 +103,7 @@ class WebGL extends EventModel<WebGLEvents> {
         // Tell the attribute how to get data out of texcoordBuffer (ARRAY_BUFFER)
         var size = 2; // 3 components per iteration
         var type = this.gl.FLOAT; // the data is 32bit floats
-        var normalize = true; // convert from 0-255 to 0.0-1.0
+        var normalize = false; // convert from 0-255 to 0.0-1.0
         var stride = 0; // 0 = move forward size * sizeof(type) each iteration to get the next color
         var offset = 0; // start at the beginning of the buffer
         this.gl.vertexAttribPointer(
@@ -177,22 +177,23 @@ class WebGL extends EventModel<WebGLEvents> {
         gl.bindTexture(this.gl.TEXTURE_2D, tex);
 
         // this matrix will convert from pixels to clip space
-        let matrix = m4.orthographic(0, this.gl.canvas.width, this.gl.canvas.height, 0, -1, 1);
-        let moveOriginMatrix = m4.translation(-anchor[0], -anchor[1], 0);
+        // let matrix = m4.orthographic(0, this.gl.canvas.width, this.gl.canvas.height, 0, -1, 1);
+        let matrix = m4.projection(gl.canvas.width, gl.canvas.height, 100);
 
         // translate our quad to dstX, dstY
         matrix = m4.translate(matrix, dstX, dstY, dstZ);
-
-        // scale our 1 unit quad
-        // from 1 unit to texWidth, texHeight units
-        matrix = m4.scale(matrix, dstWidth, dstHeight, 1);
 
         // rotate
         matrix = m4.xRotate(matrix, rdX);
         matrix = m4.yRotate(matrix, rdY);
         matrix = m4.zRotate(matrix, rdZ);
 
+        // scale our 1 unit quad
+        // from 1 unit to texWidth, texHeight units
+        matrix = m4.scale(matrix, dstWidth, dstHeight, 1);
+
         // anchor point
+        let moveOriginMatrix = m4.translation(-anchor[0], -anchor[1], 0);
         matrix = m4.multiply(matrix, moveOriginMatrix);
 
         // Set the matrix.

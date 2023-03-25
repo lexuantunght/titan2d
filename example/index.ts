@@ -7,6 +7,7 @@ import ExampleScene from './scene';
         'res/parallax-space-background.png',
         'res/parallax-space-stars.png',
         'res/parallax-space-big-planet.png',
+        'res/bird-fly.png',
     ]);
     Director.getInstance().runScene(new ExampleScene());
 })();

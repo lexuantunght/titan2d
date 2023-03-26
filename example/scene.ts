@@ -11,6 +11,7 @@ import {
     UIText,
     Color,
     Rect,
+    AudioEngine,
 } from '../index';
 
 class ExampleScene extends Scene {
@@ -38,6 +39,14 @@ class ExampleScene extends Scene {
         node3.addComponent(UITransform).setScale(new Vec3(5, 5));
         node3.addComponent(Sprite).setSpriteFrame('res/parallax-space-big-planet.png');
         //this.addChild(node3);
+
+        AudioEngine.getInstance()
+            .setSourceAndLoad(
+                'https://res.cloudinary.com/dwb0yer6d/video/upload/poco/music/castle-in-the-sky.mp3'
+            )
+            .then(() => {
+                AudioEngine.getInstance().play();
+            });
     }
 }
 

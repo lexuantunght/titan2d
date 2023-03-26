@@ -3,6 +3,8 @@ export class AudioEngine {
     private audioEl: HTMLAudioElement;
     private constructor() {
         this.audioEl = document.createElement('audio');
+        this.audioEl.muted = true;
+        this.audioEl.autoplay = true;
     }
 
     static getInstance() {
@@ -14,10 +16,31 @@ export class AudioEngine {
 
     setSource(url: string) {
         this.audioEl.src = url;
-        this.audioEl.load();
+    }
+
+    setSourceAndLoad(url: string) {
+        return new Promise<void>((resolve, reject) => {
+            this.audioEl.src = url;
+            this.audioEl.load();
+            this.audioEl.oncanplay = () => {
+                resolve();
+            };
+            this.audioEl.onerror = () => reject();
+        });
+    }
+
+    load() {
+        return new Promise<void>((resolve, reject) => {
+            this.audioEl.load();
+            this.audioEl.oncanplay = () => {
+                resolve();
+            };
+            this.audioEl.onerror = () => reject();
+        });
     }
 
     play() {
+        this.audioEl.muted = false;
         this.audioEl.play();
     }
 

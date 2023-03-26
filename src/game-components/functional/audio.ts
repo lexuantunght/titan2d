@@ -51,4 +51,16 @@ export class Audio extends Component {
     get isPaused() {
         return this.audioEl.paused;
     }
+
+    mute() {
+        this.audioEl.muted = true;
+    }
+
+    unmute() {
+        this.audioEl.muted = false;
+    }
+
+    setVolume(value: number) {
+        this.audioEl.volume = value;
+    }
 }

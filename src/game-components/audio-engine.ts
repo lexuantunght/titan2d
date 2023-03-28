@@ -3,7 +3,6 @@ export class AudioEngine {
     private audioEl: HTMLAudioElement;
     private constructor() {
         this.audioEl = document.createElement('audio');
-        this.audioEl.muted = true;
         this.audioEl.autoplay = true;
     }
 
@@ -40,7 +39,6 @@ export class AudioEngine {
     }
 
     play() {
-        this.audioEl.muted = false;
         this.audioEl.play();
     }
 

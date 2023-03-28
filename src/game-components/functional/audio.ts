@@ -5,7 +5,6 @@ export class Audio extends Component {
     constructor() {
         super();
         this.audioEl = document.createElement('audio');
-        this.audioEl.muted = true;
         this.audioEl.autoplay = true;
     }
 
@@ -36,7 +35,6 @@ export class Audio extends Component {
     }
 
     play() {
-        this.audioEl.muted = false;
         this.audioEl.play();
     }
 

@@ -3,7 +3,7 @@ export class AudioEngine {
     private audioEl: HTMLAudioElement;
     private constructor() {
         this.audioEl = document.createElement('audio');
-        this.audioEl.autoplay = true;
+        this.audioEl.autoplay = false;
     }
 
     static getInstance() {
@@ -64,5 +64,9 @@ export class AudioEngine {
 
     setVolume(value: number) {
         this.audioEl.volume = value;
+    }
+
+    getElement() {
+        return this.audioEl;
     }
 }

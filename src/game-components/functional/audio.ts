@@ -5,7 +5,7 @@ export class Audio extends Component {
     constructor() {
         super();
         this.audioEl = document.createElement('audio');
-        this.audioEl.autoplay = true;
+        this.audioEl.autoplay = false;
     }
 
     setSource(url: string) {
@@ -60,5 +60,9 @@ export class Audio extends Component {
 
     setVolume(value: number) {
         this.audioEl.volume = value;
+    }
+
+    getElement() {
+        return this.audioEl;
     }
 }

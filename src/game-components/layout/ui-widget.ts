@@ -39,7 +39,9 @@ export class UIWidget extends Component {
 
             if (this.top !== undefined && this.bottom !== undefined) {
                 height = parentSize.height - this.top - this.bottom;
-                width = (oldSize.width / oldSize.height) * height;
+                if (this.left === undefined || this.right == undefined) {
+                    width = (oldSize.width / oldSize.height) * height;
+                }
             } else if (this.top !== undefined && this.bottom === undefined) {
                 position.y = anchor[1] * height + this.top - parentAnchor[1] * parentSize.height;
             } else if (this.bottom !== undefined && this.top === undefined) {
@@ -50,7 +52,9 @@ export class UIWidget extends Component {
 
             if (this.left !== undefined && this.right !== undefined) {
                 width = parentSize.width - this.left - this.right;
-                height = (oldSize.height / oldSize.width) * width;
+                if (this.top === undefined || this.right === undefined) {
+                    height = (oldSize.height / oldSize.width) * width;
+                }
             } else if (this.left !== undefined && this.right === undefined) {
                 position.x = anchor[0] * width + this.left - parentAnchor[0] * parentSize.width;
             } else if (this.right !== undefined && this.left === undefined) {

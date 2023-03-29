@@ -30,7 +30,6 @@ class Engine {
             settings || {}
         );
 
-        Director.getInstance().viewSize = this.settings.designResolution;
         Director.getInstance().engineSettings = this.settings;
         Logger.logDev('First init engine settings', this.settings);
         Director.getInstance().addListener('PAUSE', this.pause.bind(this));

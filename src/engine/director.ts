@@ -8,14 +8,14 @@ export class Director extends EventModel<DirectorEventType> {
     private static instance: Director | null = null;
     private currentScene: Scene | null;
     private isRunning: boolean;
-    private _viewSize: Size;
+    private _canvasSize: Size;
     engineSettings!: EngineSettings;
     canvasElement!: HTMLCanvasElement;
     private constructor() {
         super();
         this.currentScene = null;
         this.isRunning = false;
-        this._viewSize = new Size();
+        this._canvasSize = new Size();
         this.resize = this.resize.bind(this);
     }
 
@@ -26,17 +26,24 @@ export class Director extends EventModel<DirectorEventType> {
         return this.instance;
     }
 
-    get viewSize(): Size {
-        return this._viewSize;
+    get canvasSize(): Size {
+        return this._canvasSize;
     }
 
-    set viewSize(size: Size) {
-        this._viewSize = size;
+    get viewSize(): Size {
+        return new Size(
+            this.engineSettings.designResolution.width,
+            this.engineSettings.designResolution.height
+        );
+    }
+
+    set canvasSize(size: Size) {
+        this._canvasSize = size;
     }
 
     resize(width: number, height: number) {
         const _size = new Size(width, height);
-        this.viewSize = _size;
+        this.canvasSize = _size;
         this.listeners.get('RESIZE')?.forEach((cb) => cb(_size));
     }
 

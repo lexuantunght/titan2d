@@ -9,7 +9,7 @@ export class Scene extends Node {
         super();
         this.type = 'SCENE';
         this.onResize = this.onResize.bind(this);
-        const viewSize = Director.getInstance().viewSize;
+        const viewSize = Director.getInstance().canvasSize;
         this.addComponent(Camera).setBound(new Rect(0, 0, viewSize.width, viewSize.height));
         this.addComponent(UITransform).contentSize =
             Director.getInstance().engineSettings.designResolution;

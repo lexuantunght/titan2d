@@ -43,7 +43,7 @@ class WebElement {
     }
 
     private canvasPosToWebPos(x: number, y: number) {
-        const canvasSize = Director.getInstance().viewSize;
+        const canvasSize = Director.getInstance().canvasSize;
         const ratioX = canvasSize.width / this.root.clientWidth;
         const ratioY = canvasSize.height / this.root.clientHeight;
         return {

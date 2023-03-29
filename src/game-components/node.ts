@@ -144,7 +144,7 @@ export class Node extends EventModel<NodeEventMap> {
     }
 
     private toRealSize(size: Size) {
-        const viewSize = Director.getInstance().viewSize;
+        const viewSize = Director.getInstance().canvasSize;
         const originSize = Director.getInstance().engineSettings.designResolution;
         let ratio = originSize.height / viewSize.height;
         if (Director.getInstance().engineSettings.fitWidth) {
@@ -154,7 +154,7 @@ export class Node extends EventModel<NodeEventMap> {
     }
 
     private toRealPosition(pos: Vec3) {
-        const viewSize = Director.getInstance().viewSize;
+        const viewSize = Director.getInstance().canvasSize;
         const originSize = Director.getInstance().engineSettings.designResolution;
         let ratioY = originSize.height / viewSize.height;
         let ratioX = originSize.width / viewSize.width;

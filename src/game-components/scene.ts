@@ -11,14 +11,15 @@ export class Scene extends Node {
         this.onResize = this.onResize.bind(this);
         const viewSize = Director.getInstance().viewSize;
         this.addComponent(Camera).setBound(new Rect(0, 0, viewSize.width, viewSize.height));
-        this.addComponent(UITransform).contentSize = viewSize;
+        this.addComponent(UITransform).contentSize =
+            Director.getInstance().engineSettings.designResolution;
         DrawObjectManager.getInstance().renderBound = this.getComponent(Camera).getBound();
         Director.getInstance().addListener('RESIZE', this.onResize);
         this.setUpListeners();
     }
 
     private onResize(size: Size) {
-        this.getComponent(UITransform).contentSize = new Size(size.width, size.height);
+        // Camera should follow by canvas size because engine check intersect camera with texture in core layer
         this.getComponent(Camera).setBound(new Rect(0, 0, size.width, size.height));
         DrawObjectManager.getInstance().renderBound = this.getComponent(Camera).getBound();
     }

@@ -10,7 +10,7 @@ class Engine {
     private canvas;
     private overlay;
     settings: EngineSettings;
-    constructor(parent?: HTMLElement | null) {
+    constructor(parent?: HTMLElement | null, settings?: EngineSettings) {
         Logger.logDev('Init engine. Thanks for using titan2d!');
         this.canvas = document.createElement('canvas');
         this.overlay = document.createElement('div');
@@ -18,14 +18,19 @@ class Engine {
             parent.appendChild(this.canvas);
             parent.appendChild(this.overlay);
         }
-        this.settings = {
-            fitHeight: false,
-            fitWidth: true,
-            designResolution: {
-                width: (parent || this.canvas).clientWidth * window.devicePixelRatio,
-                height: (parent || this.canvas).clientHeight * window.devicePixelRatio,
+        this.settings = Object.assign(
+            {
+                fitHeight: false,
+                fitWidth: true,
+                designResolution: {
+                    width: 960,
+                    height: 640,
+                },
             },
-        };
+            settings || {}
+        );
+
+        Director.getInstance().viewSize = this.settings.designResolution;
         Director.getInstance().engineSettings = this.settings;
         Logger.logDev('First init engine settings', this.settings);
         Director.getInstance().addListener('PAUSE', this.pause.bind(this));

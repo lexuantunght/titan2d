@@ -156,11 +156,9 @@ export class Node extends EventModel<NodeEventMap> {
     private toRealPosition(pos: Vec3) {
         const viewSize = Director.getInstance().viewSize;
         const originSize = Director.getInstance().engineSettings.designResolution;
-        let ratio = originSize.height / viewSize.height;
-        if (Director.getInstance().engineSettings.fitWidth) {
-            ratio = originSize.width / viewSize.width;
-        }
-        return new Vec3(pos.x / ratio, pos.y / ratio, pos.z / ratio);
+        let ratioY = originSize.height / viewSize.height;
+        let ratioX = originSize.width / viewSize.width;
+        return new Vec3(pos.x / ratioX, pos.y / ratioY, pos.z);
     }
 
     getTexture(): TextureObject | undefined {

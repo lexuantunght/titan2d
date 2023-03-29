@@ -3,7 +3,6 @@ import { Size } from 'game-components/math';
 import EventModel from 'utils/event-model-v2';
 import { DirectorEventType, EngineSettings } from 'engine/types';
 import { DrawObjectManager } from 'core/draw-object-manager';
-import { Camera } from 'game-components/functional/camera';
 
 export class Director extends EventModel<DirectorEventType> {
     private static instance: Director | null = null;
@@ -27,7 +26,7 @@ export class Director extends EventModel<DirectorEventType> {
         return this.instance;
     }
 
-    get viewSize() {
+    get viewSize(): Size {
         return this._viewSize;
     }
 

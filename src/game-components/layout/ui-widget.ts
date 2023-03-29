@@ -1,5 +1,5 @@
 import { Director } from 'engine/director';
-import { Size } from '../math';
+import { Size, Vec3 } from '../math';
 import { Component } from '../functional/component';
 import { UITransform } from '../functional/ui-transform';
 export class UIWidget extends Component {
@@ -17,31 +17,48 @@ export class UIWidget extends Component {
         this.left = left;
         this.bottom = bottom;
         this.right = right;
-        this.applyResize(Director.getInstance().viewSize);
+        this.applyResize();
     }
 
-    private applyResize(size: Size) {
+    private applyResize() {
         if (this.node) {
-            let width = size.width;
-            let height = size.height;
+            const oldSize = this.node.getComponent(UITransform).contentSize;
+            const oldPosition = this.node.getPosition();
+            const anchor = this.node.getAnchorPoint();
+
+            let parentSize = Director.getInstance().engineSettings.designResolution;
+            let parentAnchor = [0, 0];
             const parent = this.node.getParent();
-            if (parent && parent.getType() === 'NODE') {
-                const parentSize = parent.getComponent(UITransform).contentSize;
-                width = parentSize.width;
-                height = parentSize.height;
+            if (parent) {
+                parentSize = parent.getComponent(UITransform).contentSize;
+                parentAnchor = parent.getAnchorPoint();
             }
-            if (this.top) {
-                height -= this.top;
+            let width = oldSize.width;
+            let height = oldSize.height;
+            const position = new Vec3(oldPosition.x, oldPosition.y, oldPosition.z);
+
+            if (this.top !== undefined && this.bottom !== undefined) {
+                height = parentSize.height - this.top - this.bottom;
+                width = (oldSize.width / oldSize.height) * height;
+            } else if (this.top !== undefined && this.bottom === undefined) {
+                position.y = anchor[1] * height + this.top - parentAnchor[1] * parentSize.height;
+            } else if (this.bottom !== undefined && this.top === undefined) {
+                position.y =
+                    parentSize.height -
+                    (anchor[1] * height + this.bottom - parentAnchor[1] * parentSize.height);
             }
-            if (this.left) {
-                width -= this.left;
+
+            if (this.left !== undefined && this.right !== undefined) {
+                width = parentSize.width - this.left - this.right;
+                height = (oldSize.height / oldSize.width) * width;
+            } else if (this.left !== undefined && this.right === undefined) {
+                position.x = anchor[0] * width + this.left - parentAnchor[0] * parentSize.width;
+            } else if (this.right !== undefined && this.left === undefined) {
+                position.x =
+                    parentSize.width -
+                    (anchor[0] * width + this.right - parentAnchor[0] * parentSize.width);
             }
-            if (this.bottom) {
-                height -= this.bottom;
-            }
-            if (this.right) {
-                width -= this.right;
-            }
+            this.node.setPosition(position);
             this.node.getComponent(UITransform).contentSize = new Size(width, height);
         }
     }

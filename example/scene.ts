@@ -24,7 +24,7 @@ class ExampleScene extends Scene {
         node.addComponent(Sprite);
         const sp = node.getComponent(Sprite);
         sp.setSpriteFrame('res/parallax-space-background.png');
-        node.addComponent(UIWidget).widget = { top: 0, left: 0, right: 0, bottom: 0 };
+        node.addComponent(UIWidget).widget = { top: 0, bottom: 0 };
         //this.addChild(node);
 
         const node2 = new Node();
@@ -33,20 +33,12 @@ class ExampleScene extends Scene {
         node2.addComponent(Sprite).setSpriteFrame('res/bird-fly.png');
         //node2.getComponent(Sprite).setSourceRect(new Rect(68, 0, 34, 24));
         //node2.getComponent(UIText).color = Color.fromHex('#ffffff');
-        this.addChild(node2);
+        //this.addChild(node2);
 
         const node3 = new Node();
         node3.addComponent(UITransform).setScale(new Vec3(5, 5));
         node3.addComponent(Sprite).setSpriteFrame('res/parallax-space-big-planet.png');
         //this.addChild(node3);
-
-        AudioEngine.getInstance()
-            .setSourceAndLoad(
-                'https://res.cloudinary.com/dwb0yer6d/video/upload/poco/music/castle-in-the-sky.mp3'
-            )
-            .then(() => {
-                AudioEngine.getInstance().play();
-            });
     }
 }
 

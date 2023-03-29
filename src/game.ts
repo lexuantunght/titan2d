@@ -1,9 +1,10 @@
 import Engine from 'engine';
+import { EngineSettings } from 'engine/types';
 
 export class Game {
     private engine;
-    constructor(parent?: HTMLElement | null) {
-        this.engine = new Engine(parent);
+    constructor(parent?: HTMLElement | null, engineSettings?: EngineSettings) {
+        this.engine = new Engine(parent, engineSettings);
     }
 
     /**

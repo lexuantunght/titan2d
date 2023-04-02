@@ -45,4 +45,8 @@ export class Sprite extends Component {
         }
         return this.texture;
     }
+
+    getSpriteFrame() {
+        return this.spriteFrame;
+    }
 }

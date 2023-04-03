@@ -26,7 +26,8 @@ class Engine {
                     width: 960,
                     height: 640,
                 },
-            },
+                powerPreference: 'high-performance',
+            } as EngineSettings,
             settings || {}
         );
 
@@ -35,7 +36,7 @@ class Engine {
         Director.getInstance().addListener('PAUSE', this.pause.bind(this));
         Director.getInstance().addListener('RESUME', this.resume.bind(this));
         Director.getInstance().canvasElement = this.canvas;
-        this.webgl = new WebGL(this.canvas, this.overlay);
+        this.webgl = new WebGL(this.canvas, this.overlay, this.settings);
         this.webgl.addListener('UPDATE', this.update.bind(this));
         this.webgl.addListener('RESIZE', this.resize.bind(this));
         this.webgl.start();

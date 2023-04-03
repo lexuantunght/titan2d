@@ -8,18 +8,20 @@ import WebResourceLoader from 'core/web-resource-loader';
 import { DrawInfoType } from 'core/constants';
 import { m4 } from 'core/m4';
 import * as WebglUtils from 'core/webgl-utils';
+import { EngineSettings } from 'engine/types';
 
 class WebGL extends EventModel<WebGLEvents> {
     private gl: WebGL2RenderingContext;
     private webEl: WebElement;
     private webResLoader: WebResourceLoader;
     isPaused: boolean;
-    constructor(canvas: HTMLCanvasElement, overlay: HTMLDivElement) {
+    constructor(canvas: HTMLCanvasElement, overlay: HTMLDivElement, settings: EngineSettings) {
         super();
         this.gl = canvas.getContext('webgl2', {
             antialias: true,
             premultipliedAlpha: false,
             alpha: false,
+            powerPreference: settings.powerPreference,
         });
         this.webEl = new WebElement(overlay);
         this.webResLoader = new WebResourceLoader(this.gl);

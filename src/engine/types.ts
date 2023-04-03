@@ -15,4 +15,5 @@ export type EngineSettings = {
         width: number;
         height: number;
     };
+    powerPreference: 'high-performance' | 'low-power' | 'default';
 };

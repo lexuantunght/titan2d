@@ -1,8 +1,9 @@
 import { Director } from 'engine/director';
 import { DrawObjectManager } from 'core/draw-object-manager';
-import { Camera, UITransform } from './functional';
+import { Camera, Sprite, UITransform } from './functional';
 import { Node } from './node';
 import { Rect, Size } from './math';
+import TextureCache from 'core/texture-cache';
 
 export class Scene extends Node {
     constructor() {
@@ -64,8 +65,19 @@ export class Scene extends Node {
             );
     };
 
+    private cleanUpTextureCache(childs: Node[]) {
+        childs.forEach((child) => {
+            const spriteFrame = child.getComponent(Sprite)?.getSpriteFrame();
+            if (spriteFrame) {
+                TextureCache.getInstance().removeTexture(spriteFrame);
+            }
+            this.cleanUpTextureCache(child.getAllChilds());
+        });
+    }
+
     onExit() {
         Director.getInstance().removeListener('RESIZE', this.onResize);
         this.cleanUpListeners();
+        this.cleanUpTextureCache(this.getAllChilds());
     }
 }

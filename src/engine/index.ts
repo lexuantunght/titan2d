@@ -63,10 +63,16 @@ class Engine {
     }
 
     async loadImages(urls: string[], onPercentage?: (per: number) => void) {
+        const promises: Promise<unknown>[] = [];
         for (let i = 0; i < urls.length; i++) {
-            await this.webgl.loadImageAndCreateTextureInfo(urls[i]);
-            onPercentage?.((i + 1) / urls.length);
+            promises.push(
+                this.webgl.loadImageAndCreateTextureInfo(urls[i]).then((res) => {
+                    onPercentage?.((i + 1) / urls.length);
+                    return res;
+                })
+            );
         }
+        return Promise.all(promises);
     }
 }
 

@@ -1,4 +1,5 @@
 import TextureCache from 'core/texture-cache';
+import Logger from 'utils/logger';
 
 class WebResourceLoader {
     private gl: WebGL2RenderingContext;
@@ -50,7 +51,8 @@ class WebResourceLoader {
                 resolve(textureInfo);
             });
             img.addEventListener('error', () => {
-                reject(`Load assets ${url} failed`);
+                Logger.logDev(`Load assets ${url} failed`);
+                reject(url);
             });
             img.src = url;
         });
